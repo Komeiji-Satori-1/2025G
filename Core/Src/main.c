@@ -31,6 +31,7 @@
 #include "ad9833.h"
 #include "state.h"
 #include "command.h"
+#include "iir.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,18 +51,37 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+#define TIM3_COUNTER_CLK_HZ 240000000
 
+uint16_t ADC1_IN[ADC_LEN ] = {0};
+uint16_t ADC2_OUT[ADC_LEN ] = {0};
+
+volatile uint8_t ADC_Flag = 0;
+static volatile uint8_t adc1_done = 0;
+static volatile uint8_t adc2_done = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Start_ADC_Capture(void)
+{
+    HAL_ADC_Stop_DMA(&hadc1);
+    HAL_ADC_Stop_DMA(&hadc2);
 
+    adc1_done = 0;
+    adc2_done = 0;
+    ADC_Flag = 0;
+
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
+    HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
+}
 /* USER CODE END 0 */
 
 /**
@@ -86,6 +106,9 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+/* Configure the peripherals common clocks */
+  PeriphCommonClock_Config();
+
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -96,18 +119,17 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   MX_USART1_UART_Init();
+  MX_ADC2_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
+	HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_TIM_Base_Start(&htim3);
+	
   My_Usart_Init();
   AD9833_Init_GPIO();
   State_Init();
-//  AD9833_WaveSeting(1000,0,SIN_WAVE,0 );
-//  AD9833_AmpSet(105);
-//	for(int i=27;i<255;i++){
-//		AD9833_AmpSet(i);
-//		HAL_Delay(100);
-//	}
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -181,8 +203,51 @@ void SystemClock_Config(void)
   }
 }
 
-/* USER CODE BEGIN 4 */
+/**
+  * @brief Peripherals Common Clock Configuration
+  * @retval None
+  */
+void PeriphCommonClock_Config(void)
+{
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
+  /** Initializes the peripherals clock
+  */
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInitStruct.PLL2.PLL2M = 2;
+  PeriphClkInitStruct.PLL2.PLL2N = 12;
+  PeriphClkInitStruct.PLL2.PLL2P = 2;
+  PeriphClkInitStruct.PLL2.PLL2Q = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/* USER CODE BEGIN 4 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if (hadc == &hadc1)
+    {
+        HAL_ADC_Stop_DMA(hadc);
+        adc1_done = 1U;
+    }
+    else if (hadc == &hadc2)
+    {
+        HAL_ADC_Stop_DMA(hadc);
+        adc2_done = 1U;
+    }
+
+    if (adc1_done == 1U && adc2_done == 1U)
+    {
+        ADC_Flag = 1U;
+    }
+}
 /* USER CODE END 4 */
 
 /**
