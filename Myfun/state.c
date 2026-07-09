@@ -7,8 +7,8 @@
 #define HMI_CMD_A2   0xA2
 #define HMI_CMD_A3   0xA3
 #define HMI_CMD_A4   0xA4
-#define HMI_CMD_A4   0xA5
-#define HMI_CMD_A4   0xA6
+#define HMI_CMD_A5   0xA5
+#define HMI_CMD_A6   0xA6
 
 #define STATE_DEFAULT_VOUT   1.0f
 #define STATE_DEFAULT_FREQ   1000U
