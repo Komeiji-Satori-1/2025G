@@ -1,0 +1,25 @@
+Fitted model: H(s)=K/(a*s^2 + b*s + 1)
+K=5.0335852
+a=2.13358933e-10
+b=0.000295126613
+natural_frequency_fn_hz=10895.940322
+zeta=10.1023628
+Q=0.0494933718
+
+Original theory:
+K=5
+a=1e-08
+b=0.0003
+natural_frequency_fn_hz=1591.549431
+zeta=1.5
+Q=0.333333333
+
+Fit error versus measured:
+RMSE_gain=0.014741965
+MAE_gain=0.0117291879
+MAPE_percent=0.651227
+Max_abs_rel_error_percent=1.755656 at 1600 Hz
+
+Original theory error versus measured:
+RMSE_gain=0.0937652725
+MAPE_percent=4.182525

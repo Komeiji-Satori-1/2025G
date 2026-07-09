@@ -82,6 +82,7 @@ void SystemClock_Config(void);
 static void Sweep_SetTim3SampleRate(uint32_t sample_rate_hz);
 static HAL_StatusTypeDef Sweep_CaptureAdc(void);
 static void Sweep_Process(void);
+static void Sweep_InvalidateDCache(void *addr, uint32_t size);
 
 /* USER CODE END PFP */
 
@@ -260,6 +261,7 @@ static void Sweep_SetTim3SampleRate(uint32_t sample_rate_hz)
   __HAL_TIM_SET_AUTORELOAD(&htim3, period - 1U);
   __HAL_TIM_SET_COUNTER(&htim3, 0U);
   htim3.Instance->EGR = TIM_EGR_UG;
+  __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
 
   FFT_SetSampling((float)(tim_clock_hz / (prescaler * period)));
 }
@@ -270,7 +272,7 @@ static HAL_StatusTypeDef Sweep_CaptureAdc(void)
 
   adc_dma_done = 0U;
 
-  SCB_InvalidateDCache_by_Addr((uint32_t *)sweep_adc_buffer, sizeof(sweep_adc_buffer));
+  Sweep_InvalidateDCache(sweep_adc_buffer, sizeof(sweep_adc_buffer));
 
   HAL_TIM_Base_Stop(&htim3);
   __HAL_TIM_SET_COUNTER(&htim3, 0U);
@@ -296,9 +298,30 @@ static HAL_StatusTypeDef Sweep_CaptureAdc(void)
   HAL_TIM_Base_Stop(&htim3);
   HAL_ADC_Stop_DMA(&hadc1);
 
-  SCB_InvalidateDCache_by_Addr((uint32_t *)sweep_adc_buffer, sizeof(sweep_adc_buffer));
+  Sweep_InvalidateDCache(sweep_adc_buffer, sizeof(sweep_adc_buffer));
 
   return HAL_OK;
+}
+
+static void Sweep_InvalidateDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+  uint32_t start_addr;
+  uint32_t end_addr;
+
+  if ((SCB->CCR & SCB_CCR_DC_Msk) == 0U)
+  {
+    return;
+  }
+
+  start_addr = (uint32_t)addr & ~31UL;
+  end_addr = ((uint32_t)addr + size + 31UL) & ~31UL;
+
+  SCB_InvalidateDCache_by_Addr((uint32_t *)start_addr, (int32_t)(end_addr - start_addr));
+#else
+  (void)addr;
+  (void)size;
+#endif
 }
 
 static void Sweep_Process(void)
