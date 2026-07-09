@@ -89,7 +89,6 @@ void FFT_Process(uint16_t *ADC_Buffer, float *FFT_Ampl)
 	}
 	arm_rfft_fast_f32(&S, FFT_Input, FFT_Output, ifftFlag);
 	*/
-	uint32_t adc_sum = 0;
     float *ampl;
     ampl = FFT_Ampl;
 

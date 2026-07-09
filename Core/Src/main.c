@@ -65,9 +65,9 @@
 static volatile uint8_t adc_dma_done = 0U;
 
 #if defined(__CC_ARM)
-static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __attribute__((at(0x24000000)));
+static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __attribute__((section("DMA_RAM"), zero_init));
 #else
-static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __ALIGNED(32);
+static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __attribute__((section(".dma_ram"), aligned(32)));
 #endif
 volatile uint32_t sweep_freq_result[SWEEP_POINT_COUNT];
 volatile float sweep_fft_freq_result[SWEEP_POINT_COUNT];
@@ -259,7 +259,7 @@ static void Sweep_SetTim3SampleRate(uint32_t sample_rate_hz)
   __HAL_TIM_SET_PRESCALER(&htim3, prescaler - 1U);
   __HAL_TIM_SET_AUTORELOAD(&htim3, period - 1U);
   __HAL_TIM_SET_COUNTER(&htim3, 0U);
-  __HAL_TIM_GENERATE_EVENT(&htim3, TIM_EVENTSOURCE_UPDATE);
+  htim3.Instance->EGR = TIM_EGR_UG;
 
   FFT_SetSampling((float)(tim_clock_hz / (prescaler * period)));
 }
