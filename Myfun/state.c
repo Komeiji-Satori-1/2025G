@@ -1,11 +1,15 @@
 #include "state.h"
 #include "command.h"
 #include "calculate.h"
+#include "iir.h"
 
 #define HMI_CMD_A1   0xA1
 #define HMI_CMD_A2   0xA2
 #define HMI_CMD_A3   0xA3
 #define HMI_CMD_A4   0xA4
+#define HMI_CMD_A4   0xA5
+#define HMI_CMD_A4   0xA6
+
 #define STATE_DEFAULT_VOUT   1.0f
 #define STATE_DEFAULT_FREQ   1000U
 
@@ -14,6 +18,8 @@ typedef enum
     STATE_IDLE = 0,
     STATE_CHECK_HMI,
     STATE_CALC_VIN,
+    STATE_CALC_LEARN,
+    STATE_CALC_IIR,
 } State_t;
 
 static State_t state = STATE_IDLE;
@@ -110,6 +116,19 @@ void State_Proc(void)
                 State_HandleHmiData(HMI_CMD_A4, hmi_a4_value);
             }
 
+            if (hmi_a5_update_flag)
+            {
+                hmi_a5_update_flag = 0;
+                state = STATE_CALC_LEARN;
+            }
+
+            if (hmi_a6_update_flag)
+            {
+                hmi_a6_update_flag = 0;
+                state = STATE_CALC_IIR;
+                //构建iir
+            }
+
             if (need_calculate)
             {
                 state = STATE_CALC_VIN;
@@ -126,6 +145,20 @@ void State_Proc(void)
             state = STATE_CHECK_HMI;
             break;
 
+        case STATE_CALC_LEARN:
+            need_calculate = 0;
+            
+            calculate_learn_start();
+            calculate_learn_proc();
+            state = STATE_CHECK_HMI;
+            break;
+
+        case STATE_CALC_IIR:
+            need_calculate = 0;
+            //构建iir，待补充
+            state = STATE_CHECK_HMI;
+            break;
+            
         default:
             state = STATE_CHECK_HMI;
             break;

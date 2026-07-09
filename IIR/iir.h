@@ -6,6 +6,7 @@
 #include "math.h"
 #include "stdio.h"
 #include <stdint.h>
+#include "HMI.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,7 +50,7 @@ typedef struct
     int64_t a2;
 } digital_coef;
 
-#define FILTER_MODE_THR 0.5
+#define FILTER_MODE_THR 0.8
 
 typedef enum
 {
