@@ -56,6 +56,11 @@ void FFT_SetSampling(float sampling_freq)
     }
 }
 
+float FFT_GetFrequency(void)
+{
+    return FFT_Freq;
+}
+
 /**
  * @brief 在幅度谱前半段（单边谱）中找峰值 bin
  *
@@ -201,14 +206,36 @@ FFT_mag		FFT结果的幅值数组
 void ADC_FFT_Get_Wave_Mes(uint32_t FFT_mag_max_index, float fs, float *FFT_Ampl, float *Freq, int correctNum)
 {
     int i;
+    int start;
+    int stop;
     float DatePower1 = 0.0f;
     float DatePower2 = 0.0f;
     float f;
 
-    for (i = -correctNum; i <= correctNum; i++)
+    start = (int)FFT_mag_max_index - correctNum;
+    stop = (int)FFT_mag_max_index + correctNum;
+
+    if (start < 1)
     {
-        DatePower1 += (FFT_mag_max_index + i) * FFT_mag[FFT_mag_max_index + i] * FFT_mag[FFT_mag_max_index + i];
-        DatePower2 += FFT_mag[FFT_mag_max_index + i] * FFT_mag[FFT_mag_max_index + i];
+        start = 1;
+    }
+
+    if (stop >= (FFT_LEN / 2))
+    {
+        stop = (FFT_LEN / 2) - 1;
+    }
+
+    for (i = start; i <= stop; i++)
+    {
+        DatePower1 += i * FFT_mag[i] * FFT_mag[i];
+        DatePower2 += FFT_mag[i] * FFT_mag[i];
+    }
+
+    if (DatePower2 <= 0.0f)
+    {
+        *Freq = 0.0f;
+        *FFT_Ampl = 0.0f;
+        return;
     }
 
     f = DatePower1 / DatePower2;

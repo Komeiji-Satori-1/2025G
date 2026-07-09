@@ -31,6 +31,7 @@
 #include "ad9833.h"
 #include "state.h"
 #include "command.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,6 +41,17 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define SWEEP_AUTO_RUN            1U
+#define SWEEP_PRINT_RESULT        0U
+
+#define SWEEP_START_FREQ_HZ       100U
+#define SWEEP_STOP_FREQ_HZ        3000U
+#define SWEEP_STEP_FREQ_HZ        100U
+#define SWEEP_SAMPLE_FREQ_HZ      20000U
+#define SWEEP_ADC_SAMPLES         1024U
+#define SWEEP_SETTLE_MS           20U
+#define SWEEP_TIMEOUT_MS          200U
+#define SWEEP_POINT_COUNT         (((SWEEP_STOP_FREQ_HZ - SWEEP_START_FREQ_HZ) / SWEEP_STEP_FREQ_HZ) + 1U)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,12 +62,26 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+static volatile uint8_t adc_dma_done = 0U;
+
+#if defined(__CC_ARM)
+static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __attribute__((at(0x24000000)));
+#else
+static uint16_t sweep_adc_buffer[SWEEP_ADC_SAMPLES] __ALIGNED(32);
+#endif
+volatile uint32_t sweep_freq_result[SWEEP_POINT_COUNT];
+volatile float sweep_fft_freq_result[SWEEP_POINT_COUNT];
+volatile float sweep_amp_result[SWEEP_POINT_COUNT];
+volatile uint8_t sweep_finished = 0U;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+static void Sweep_SetTim3SampleRate(uint32_t sample_rate_hz);
+static HAL_StatusTypeDef Sweep_CaptureAdc(void);
+static void Sweep_Process(void);
 
 /* USER CODE END PFP */
 
@@ -115,7 +141,11 @@ int main(void)
   while (1)
   {   
     Usart_Rx_Proc();
+#if SWEEP_AUTO_RUN
+    Sweep_Process();
+#else
     State_Proc();
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -182,6 +212,141 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+static uint32_t Sweep_GetTim3ClockHz(void)
+{
+  uint32_t tim_clock_hz = HAL_RCC_GetPCLK1Freq();
+
+  if ((RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) != RCC_D2CFGR_D2PPRE1_DIV1)
+  {
+    tim_clock_hz *= 2U;
+  }
+
+  return tim_clock_hz;
+}
+
+static void Sweep_SetTim3SampleRate(uint32_t sample_rate_hz)
+{
+  uint32_t tim_clock_hz;
+  uint32_t ticks_per_sample;
+  uint32_t prescaler;
+  uint32_t period;
+
+  if (sample_rate_hz == 0U)
+  {
+    return;
+  }
+
+  tim_clock_hz = Sweep_GetTim3ClockHz();
+  ticks_per_sample = tim_clock_hz / sample_rate_hz;
+  if (ticks_per_sample == 0U)
+  {
+    ticks_per_sample = 1U;
+  }
+
+  prescaler = (ticks_per_sample + 65535U) / 65536U;
+  if (prescaler == 0U)
+  {
+    prescaler = 1U;
+  }
+
+  period = ticks_per_sample / prescaler;
+  if (period == 0U)
+  {
+    period = 1U;
+  }
+
+  HAL_TIM_Base_Stop(&htim3);
+  __HAL_TIM_SET_PRESCALER(&htim3, prescaler - 1U);
+  __HAL_TIM_SET_AUTORELOAD(&htim3, period - 1U);
+  __HAL_TIM_SET_COUNTER(&htim3, 0U);
+  __HAL_TIM_GENERATE_EVENT(&htim3, TIM_EVENTSOURCE_UPDATE);
+
+  FFT_SetSampling((float)(tim_clock_hz / (prescaler * period)));
+}
+
+static HAL_StatusTypeDef Sweep_CaptureAdc(void)
+{
+  uint32_t start_tick;
+
+  adc_dma_done = 0U;
+
+  SCB_InvalidateDCache_by_Addr((uint32_t *)sweep_adc_buffer, sizeof(sweep_adc_buffer));
+
+  HAL_TIM_Base_Stop(&htim3);
+  __HAL_TIM_SET_COUNTER(&htim3, 0U);
+
+  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)sweep_adc_buffer, SWEEP_ADC_SAMPLES) != HAL_OK)
+  {
+    return HAL_ERROR;
+  }
+
+  HAL_TIM_Base_Start(&htim3);
+
+  start_tick = HAL_GetTick();
+  while (adc_dma_done == 0U)
+  {
+    if ((HAL_GetTick() - start_tick) > SWEEP_TIMEOUT_MS)
+    {
+      HAL_TIM_Base_Stop(&htim3);
+      HAL_ADC_Stop_DMA(&hadc1);
+      return HAL_TIMEOUT;
+    }
+  }
+
+  HAL_TIM_Base_Stop(&htim3);
+  HAL_ADC_Stop_DMA(&hadc1);
+
+  SCB_InvalidateDCache_by_Addr((uint32_t *)sweep_adc_buffer, sizeof(sweep_adc_buffer));
+
+  return HAL_OK;
+}
+
+static void Sweep_Process(void)
+{
+  static uint32_t sweep_freq_hz = SWEEP_START_FREQ_HZ;
+  uint32_t index;
+  float fft_amp = 0.0f;
+
+  index = (sweep_freq_hz - SWEEP_START_FREQ_HZ) / SWEEP_STEP_FREQ_HZ;
+
+  AD9833_WaveSeting(sweep_freq_hz, 0, SIN_WAVE, 0);
+  HAL_Delay(SWEEP_SETTLE_MS);
+
+  Sweep_SetTim3SampleRate(SWEEP_SAMPLE_FREQ_HZ);
+
+  if (Sweep_CaptureAdc() == HAL_OK)
+  {
+    FFT_Process(sweep_adc_buffer, &fft_amp);
+
+    sweep_freq_result[index] = sweep_freq_hz;
+    sweep_fft_freq_result[index] = FFT_GetFrequency();
+    sweep_amp_result[index] = fft_amp;
+
+#if SWEEP_PRINT_RESULT
+    printf("%lu,%.2f,%.3f\r\n", sweep_freq_hz, sweep_fft_freq_result[index], sweep_amp_result[index]);
+#endif
+  }
+
+  sweep_freq_hz += SWEEP_STEP_FREQ_HZ;
+  if (sweep_freq_hz > SWEEP_STOP_FREQ_HZ)
+  {
+    sweep_freq_hz = SWEEP_START_FREQ_HZ;
+    sweep_finished = 1U;
+    HAL_Delay(1000U);
+  }
+  else
+  {
+    sweep_finished = 0U;
+  }
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  if (hadc->Instance == ADC1)
+  {
+    adc_dma_done = 1U;
+  }
+}
 
 /* USER CODE END 4 */
 

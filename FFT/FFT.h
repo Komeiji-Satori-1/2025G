@@ -15,4 +15,5 @@ void Find_BaseIndex(void);
 void Process_FFT_mag(float *FFT_mag, float *FFT_mag_max, uint32_t *FFT_mag_max_index,float *FFT_Ampl);
 void showdata(float *buffer, uint16_t n);
 void FFT_SetSampling(float sampling_freq);
+float FFT_GetFrequency(void);
 float Calculate_DC_Value(uint16_t *ADC_Buffer);
