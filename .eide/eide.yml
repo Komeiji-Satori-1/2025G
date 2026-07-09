@@ -5,6 +5,7 @@ deviceName: null
 packDir: .pack/Keil/STM32H7xx_DFP.2.7.0
 srcDirs:
   - Myfun
+  - IIR
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -70,6 +71,7 @@ virtualFolder:
             - path: Drivers/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.c
             - path: Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.c
             - path: Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
+            - path: Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_inverse_f64.c
           folders: []
     - name: FFT
       files:
@@ -113,6 +115,7 @@ targets:
         - HMI
         - AD9833
         - Myfun
+        - IIR
         - .cmsis/include
         - MDK-ARM/RTE/_25G
         - Drivers/CMSIS/DSP/Include

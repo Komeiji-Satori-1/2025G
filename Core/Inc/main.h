@@ -58,6 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ADC1_IN_Pin GPIO_PIN_0
+#define ADC1_IN_GPIO_Port GPIOA
+#define ADC2_OUT_Pin GPIO_PIN_2
+#define ADC2_OUT_GPIO_Port GPIOA
 #define AD9833_SDA_Pin GPIO_PIN_12
 #define AD9833_SDA_GPIO_Port GPIOB
 #define AD9833_CS_Pin GPIO_PIN_13
@@ -67,7 +71,7 @@ void Error_Handler(void);
 #define AD9833_FSY_Pin GPIO_PIN_15
 #define AD9833_FSY_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#define ADC_LEN 1024
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

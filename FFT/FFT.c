@@ -216,3 +216,75 @@ void ADC_FFT_Get_Wave_Mes(uint32_t FFT_mag_max_index, float fs, float *FFT_Ampl,
     *FFT_Ampl = sqrtf(DatePower2);
 }
 
+//单频点DFT
+#define DFT_PI 3.14159265358979323846f
+
+void FFT_SingleFreqDFT_U16(const uint16_t *adc_buf,
+                           uint16_t len,
+                           float fs,
+                           float target_freq,
+                           FFT_SingleFreqResult_t *result)
+{
+    uint16_t i;
+    float dc = 0.0f;
+    float real = 0.0f;
+    float imag = 0.0f;
+    float sample;
+    float angle;
+
+    if ((adc_buf == NULL) || (result == NULL) || (len == 0U) || (fs <= 0.0f))
+    {
+        return;
+    }
+
+    for (i = 0; i < len; i++)
+    {
+        dc += (float)adc_buf[i];
+    }
+
+    dc /= (float)len;
+
+    for (i = 0; i < len; i++)
+    {
+        sample = (float)adc_buf[i] - dc;
+        angle = 2.0f * DFT_PI * target_freq * (float)i / fs;
+
+        real += sample * cosf(angle);
+        imag -= sample * sinf(angle);
+    }
+
+    result->real = real;
+    result->imag = imag;
+    result->mag = 2.0f * sqrtf(real * real + imag * imag) / (float)len;
+    result->phase = atan2f(imag, real);
+}
+
+void FFT_CalcTransfer(const FFT_SingleFreqResult_t *input,
+                      const FFT_SingleFreqResult_t *output,
+                      FFT_TransferResult_t *h)
+{
+    float denominator;
+
+    if ((input == NULL) || (output == NULL) || (h == NULL))
+    {
+        return;
+    }
+
+    denominator = input->real * input->real + input->imag * input->imag;
+
+    if (denominator < 1e-12f)
+    {
+        h->real = 0.0f;
+        h->imag = 0.0f;
+        h->mag = 0.0f;
+        h->phase = 0.0f;
+        return;
+    }
+
+    // H = output / input
+    h->real = (output->real * input->real + output->imag * input->imag) / denominator;
+    h->imag = (output->imag * input->real - output->real * input->imag) / denominator;
+
+    h->mag = sqrtf(h->real * h->real + h->imag * h->imag);
+    h->phase = atan2f(h->imag, h->real);
+}
