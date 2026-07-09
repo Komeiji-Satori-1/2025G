@@ -6,6 +6,7 @@
 #include "math.h"
 #include "stdio.h"
 #include <stdint.h>
+#include "HMI.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +49,16 @@ typedef struct
     int64_t a1;
     int64_t a2;
 } digital_coef;
+
+#define FILTER_MODE_THR 0.8
+
+typedef enum
+{
+    LOW_PASS_FILTER = 0,
+    HIGH_PASS_FILTER,
+    BAND_PASS_FILTER,
+    BAND_STOP_FILTER
+} FILTER_TYPE;
 
 extern float freq_table[SAMPLE_NUM];
 

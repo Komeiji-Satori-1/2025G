@@ -463,6 +463,8 @@ void calculate_learn_proc(void)
         analog_coef_data = matrix_calc();
         digital_coef_data = bilinear_transform_quant(&analog_coef_data);
         // 根据扫频得到的 H(jw) 计算 IIR 参数
+        //判断滤波器类型
+        get_filter_type(&analog_coef_data);
         learn.state = LEARN_DONE;
         break;
 
