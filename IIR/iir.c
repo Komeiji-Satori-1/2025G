@@ -330,12 +330,12 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     // ========== 步骤0: 输入参数检查（保持原逻辑，补充Fs校验） ==========
     if (analog_coef_data == NULL)
     {
-        printf(stderr, "Error: NULL pointer passed to bilinear_transform_quant\n");
+        printf("Error: NULL pointer passed to bilinear_transform_quant\n");
         return result;
     }
     if (Fs <= 0 || Fs > 1e9)
     { // 补充Fs有效性检查（不修改端口，仅增强健壮性）
-        printf(stderr, "Error: Invalid sampling frequency Fs = %.2f (must be >0 and <=1e9)\n", Fs);
+        printf("Error: Invalid sampling frequency Fs = %.2f (must be >0 and <=1e9)\n", Fs);
         return result;
     }
 
@@ -367,7 +367,7 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     // 检查分母常数项非零（避免数值爆炸）
     if (fabs(den0) < EPS)
     {
-        printf(stderr, "Error: Denominator coefficient den0 is zero!\n");
+        printf("Error: Denominator coefficient den0 is zero!\n");
         return result;
     }
 
