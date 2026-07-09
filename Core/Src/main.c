@@ -100,8 +100,14 @@ int main(void)
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_TIM_Base_Start(&htim3);
   My_Usart_Init();
-  ad9833_init();
+  AD9833_Init_GPIO();
   State_Init();
+//  AD9833_WaveSeting(1000,0,SIN_WAVE,0 );
+//  AD9833_AmpSet(105);
+//	for(int i=27;i<255;i++){
+//		AD9833_AmpSet(i);
+//		HAL_Delay(100);
+//	}
   /* USER CODE END 2 */
 
   /* Infinite loop */

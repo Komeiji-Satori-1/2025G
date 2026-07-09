@@ -121,7 +121,7 @@ void State_Proc(void)
 
             vin = calculate_vin(vout, freq);
             calculate_set_ad9833_amp_by_vin(vin);
-            ad9833_set_freq(freq, ad9833_Sine);
+            AD9833_WaveSeting(freq,0,SIN_WAVE,0 );
 
             state = STATE_CHECK_HMI;
             break;

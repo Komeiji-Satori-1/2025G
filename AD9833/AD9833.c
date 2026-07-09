@@ -1,352 +1,223 @@
+
 #include "AD9833.h"
 
-/* =========================================================================
- * 模块内部常量
- * ========================================================================= */
-#define MCP41010_WRITE_POT0 0x1100U
 
-/* =========================================================================
- * 全局变量
- * ========================================================================= */
-WaveFormConfig_t WaveFormConfig;
+/*端口定义 */
+	#define PORT_FSYNC	GPIOB
+	#define PIN_FSYNC	GPIO_PIN_15
 
-/* =========================================================================
- * 模块内部变量
- * ========================================================================= */
-static uint16_t ad9833_control_word = (ad9833_Reg_control_B28 | ad9833_Sine);
+	#define PORT_SCK	GPIOB
+	#define PIN_SCK		GPIO_PIN_14
 
-/* =========================================================================
- * 内部辅助函数
- * ========================================================================= */
-static void AD9833_SPI_Delay(void)
+	#define PORT_DAT	GPIOB
+	#define PIN_DAT		GPIO_PIN_12
+
+	#define PORT_CS		GPIOB
+	#define PIN_CS		GPIO_PIN_13  //数字电位器片选
+
+//****************************************************************
+void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin){
+	HAL_GPIO_WritePin(GPIOx,GPIO_Pin,GPIO_PIN_RESET);
+}
+void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin){
+	HAL_GPIO_WritePin(GPIOx,GPIO_Pin,GPIO_PIN_SET);
+}
+	#define FSYNC_0()		GPIO_ResetBits(PORT_FSYNC, PIN_FSYNC)
+	#define FSYNC_1()		GPIO_SetBits(PORT_FSYNC, PIN_FSYNC)
+
+	#define SCK_0()		GPIO_ResetBits(PORT_SCK, PIN_SCK)
+	#define SCK_1()		GPIO_SetBits(PORT_SCK, PIN_SCK)
+
+	#define DAT_0()		GPIO_ResetBits(PORT_DAT, PIN_DAT)
+	#define DAT_1()		GPIO_SetBits(PORT_DAT, PIN_DAT)	
+
+	#define CS_0()		GPIO_ResetBits(PORT_CS, PIN_CS)	
+	#define CS_1()		GPIO_SetBits(PORT_CS, PIN_CS)
+//初始化AD9833 GPIO
+
+void AD9833_Init_GPIO(void)
 {
-    __NOP();
-    __NOP();
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    GPIO_InitStruct.Pin = PIN_FSYNC | PIN_DAT | PIN_SCK | PIN_CS;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    FSYNC_1();   // AD9833 不选中
+    CS_1();      // MCP41010 不选中
+    SCK_0();     // SPI 空闲低，适合 MCP41010
+    DAT_0();
 }
 
-static uint16_t ad9833_freq_reg(uint8_t ch)
+
+
+/*
+*********************************************************************************************************
+*	函 数 名: AD9833_Delay
+*	功能说明: 时钟延时
+*	形    参: 无
+*	返 回 值: 无
+*********************************************************************************************************
+*/
+static void AD9833_Delay(void)
 {
-    return (ch == ad9833_CH1) ? ad9833_Reg_freq1 : ad9833_Reg_freq0;
-}
-static uint16_t ad9833_phase_reg(uint8_t ch)
-{
-    /* AD9833 provides PHASE0 and PHASE1; PSELECT decides the active one. */
-    return (ch == ad9833_CH1) ? ad9833_Reg_phase1 : ad9833_Reg_phase0;
-}
-
-static uint16_t ad9833_fselect_bit(uint8_t ch)
-{
-    return (ch == ad9833_CH1) ? ad9833_Reg_control_FSELECT : 0;
-}
-
-/* =========================================================================
- * SPI底层（原 My_SPI/My_SPI.c）
- * ========================================================================= */
-void AD9833_SPI_16bits_Write(uint16_t data)
-{
-    uint8_t i;
-
-    AD9833_SPI_SCK_H;
-
-    for (i = 0; i < 16; i++)
-    {
-        if ((data & 0x8000U) != 0U)
-        {
-            AD9833_SPI_SDA_H;
-        }
-        else
-        {
-            AD9833_SPI_SDA_L;
-        }
-
-        AD9833_SPI_Delay();
-        AD9833_SPI_SCK_L;
-        AD9833_SPI_Delay();
-        AD9833_SPI_SCK_H;
-
-        data <<= 1;
-    }
+	uint16_t i;
+	for (i = 0; i < 20; i++);
 }
 
-/* =========================================================================
- * MCP41010 数字电位器（内部使用）
- * ========================================================================= */
-static void MCP41010_Write(uint8_t amp)
+
+
+/*
+*********************************************************************************************************
+*	函 数 名: AD9833_Write
+*	功能说明: 向SPI总线发送16个bit数据
+*	形    参: TxData : 数据
+*	返 回 值: 无
+*********************************************************************************************************
+*/
+void AD9833_Write(unsigned int TxData)
 {
-    uint8_t i;
-    uint16_t temp = MCP41010_WRITE_POT0 | amp;
+	unsigned char i;
 
-    AD9833_SPI_CS_H;
-    MCP41010_CS_L;
+	SCK_1();
+	//AD9833_Delay();
+	FSYNC_1();
+	//AD9833_Delay();
+	FSYNC_0();
+	//AD9833_Delay();
+	for(i = 0; i < 16; i++)
+	{
+		if (TxData & 0x8000)
+			DAT_1();
+		else
+			DAT_0();
+		
+		AD9833_Delay();
+		SCK_0();
+		AD9833_Delay();		
+		SCK_1();
+		
+		TxData <<= 1;
+	}
+	FSYNC_1();
+	
+} 
 
-    for (i = 0; i < 16; i++)
-    {
-        AD9833_SPI_SCK_L;
+/*
+*********************************************************************************************************
+*	函 数 名: AD9833_AmpSet
+*	功能说明: 改变输出信号幅度值
+*	形    参: 1.amp ：幅度值  0- 255
+*	返 回 值: 无
+*********************************************************************************************************
+*/ 
 
-        if (temp & 0x8000U)
-            AD9833_SPI_SDA_H;
-        else
-            AD9833_SPI_SDA_L;
 
-        temp <<= 1;
+void AD9833_AmpSet(unsigned char amp)
+{
+	unsigned char i;
+	unsigned int temp;
 
-        AD9833_SPI_SCK_H;
+    FSYNC_1();   // 保证 AD9833 不被选中
+    SCK_0();     // 数字电位器一般用 SPI 模式0，空闲低电平
 
-        for (volatile uint16_t d = 0; d < 100; d++)
-        {
-            __NOP();
-        }
-    }
+    CS_1();
+    AD9833_Delay();
+    CS_0();
 
-    MCP41010_CS_H;
+	temp =0x1100|amp;
+	for(i=0;i<16;i++)
+	{
+	   SCK_0();
+       AD9833_Delay();
+
+	   if(temp&0x8000){
+        DAT_1();
+       }
+	   else{
+        DAT_0();
+       }
+		AD9833_Delay();
+	    SCK_1();
+	    AD9833_Delay();
+
+        temp<<=1;
+	}
+	
+   	CS_1();
+    SCK_0();
 }
 
-/* =========================================================================
- * AD9833驱动层（原 My_FML/ad9833.c）
- * ========================================================================= */
-void ad9833_set_amplitude(uint8_t amp)
+
+/*
+*********************************************************************************************************
+*	函 数 名: AD9833_WaveSeting
+*	功能说明: 向SPI总线发送16个bit数据
+*	形    参: 1.Freq: 频率值, 0.1 hz - 12Mhz
+			  2.Freq_SFR: 0 或 1
+			  3.WaveMode: TRI_WAVE(三角波),SIN_WAVE(正弦波),SQU_WAVE(方波)
+			  4.Phase : 波形的初相位
+*	返 回 值: 无
+*********************************************************************************************************
+*/ 
+void AD9833_WaveSeting(double Freq,unsigned int Freq_SFR,unsigned int WaveMode,unsigned int Phase )
 {
-    MCP41010_Write(amp);
+
+		int frequence_LSB,frequence_MSB,Phs_data;
+		double   frequence_mid,frequence_DATA;
+		long int frequence_hex;
+
+		/*********************************计算频率的16进制值***********************************/
+		frequence_mid=268435456/25;//适合25M晶振
+		//如果时钟频率不为25MHZ，修改该处的频率值，单位MHz ，AD9833最大支持25MHz
+		frequence_DATA=Freq;
+		frequence_DATA=frequence_DATA/1000000;
+		frequence_DATA=frequence_DATA*frequence_mid;
+		frequence_hex=frequence_DATA;  //这个frequence_hex的值是32位的一个很大的数字，需要拆分成两个14位进行处理；
+		frequence_LSB=frequence_hex; //frequence_hex低16位送给frequence_LSB
+		frequence_LSB=frequence_LSB&0x3fff;//去除最高两位，16位数换去掉高位后变成了14位
+		frequence_MSB=frequence_hex>>14; //frequence_hex高16位送给frequence_HSB
+		frequence_MSB=frequence_MSB&0x3fff;//去除最高两位，16位数换去掉高位后变成了14位
+
+		Phs_data=Phase|0xC000;	//相位值
+		AD9833_Write(0x0100); //复位AD9833,即RESET位为1
+		AD9833_Write(0x2100); //选择数据一次写入，B28位和RESET位为1
+
+		if(Freq_SFR==0)				  //把数据设置到设置频率寄存器0
+		{
+		 	frequence_LSB=frequence_LSB|0x4000;
+		 	frequence_MSB=frequence_MSB|0x4000;
+			 //使用频率寄存器0输出波形
+			AD9833_Write(frequence_LSB); //L14，选择频率寄存器0的低14位数据输入
+			AD9833_Write(frequence_MSB); //H14 频率寄存器的高14位数据输入
+			AD9833_Write(Phs_data);	//设置相位
+			//AD9833_Write(0x2000); /**设置FSELECT位为0，芯片进入工作状态,频率寄存器0输出波形**/
+	    }
+		if(Freq_SFR==1)				//把数据设置到设置频率寄存器1
+		{
+			 frequence_LSB=frequence_LSB|0x8000;
+			 frequence_MSB=frequence_MSB|0x8000;
+			//使用频率寄存器1输出波形
+			AD9833_Write(frequence_LSB); //L14，选择频率寄存器1的低14位输入
+			AD9833_Write(frequence_MSB); //H14 频率寄存器1为
+			AD9833_Write(Phs_data);	//设置相位
+			//AD9833_Write(0x2800); /**设置FSELECT位为0，设置FSELECT位为1，即使用频率寄存器1的值，芯片进入工作状态,频率寄存器1输出波形**/
+		}
+
+		if(WaveMode==TRI_WAVE) //输出三角波波形
+		 	AD9833_Write(0x2002); 
+		if(WaveMode==SQU_WAVE)	//输出方波波形
+			AD9833_Write(0x2028); 
+		if(WaveMode==SIN_WAVE)	//输出正弦波形
+			AD9833_Write(0x2000); 
+
 }
 
-void ad9833_init(void)
-{
-    MCP41010_CS_H;
-    AD9833_SPI_CS_H;
-    AD9833_SPI_SCK_H;
 
-    HAL_Delay(10);
 
-    ad9833_control_word = ad9833_Reg_control_B28 | ad9833_Sine;
-    ad9833_write_reg(ad9833_control_word | ad9833_Reg_control_Reset);
-    ad9833_set_freq_ch(ad9833_Freq, ad9833_Sine, ad9833_CH0);
-}
 
-void ad9833_write_reg(uint16_t value)
-{
-    MCP41010_CS_H;
-    AD9833_SPI_CS_L;
-    AD9833_SPI_16bits_Write(value);
-    AD9833_SPI_CS_H;
-}
-
-uint32_t ad9833_freq_to_word(uint32_t freq_hz)
-{
-    uint64_t word = ((uint64_t)freq_hz * AD9833_FREQ_WORD_SCALE + (AD9833_MCLK_HZ / 2U)) / AD9833_MCLK_HZ;
-
-    if (word > AD9833_FREQ_WORD_MAX)
-    {
-        word = AD9833_FREQ_WORD_MAX;
-    }
-
-    return (uint32_t)word;
-}
-static float ad9833_wrap_phase_deg(float phase_deg)
-{
-    /*
-     * Normalize the phase command before converting it to an AD9833 word.
-     * The hardware phase accumulator is periodic, so -10 deg and 350 deg
-     * should generate the same 12-bit phase value.
-     */
-    while (phase_deg >= 360.0f)
-    {
-        phase_deg -= 360.0f;
-    }
-
-    while (phase_deg < 0.0f)
-    {
-        phase_deg += 360.0f;
-    }
-
-    return phase_deg;
-}
-void ad9833_set_waveform(uint16_t type)
-{
-    ad9833_control_word &= (uint16_t)(ad9833_Reg_control_B28 | ad9833_Reg_control_FSELECT | ad9833_Reg_control_PSELECT);
-    ad9833_control_word |= type;
-    ad9833_write_reg(ad9833_control_word);
-}
-
-void ad9833_set_freq(uint32_t freq, uint16_t type)
-{
-    ad9833_set_freq_ch(freq, type, ad9833_CH0);
-}
-
-void ad9833_set_freq_ch(uint32_t freq, uint16_t type, uint8_t ch)
-{
-    ad9833_set_freq_word(ad9833_freq_to_word(freq), type, ch);
-}
-
-void ad9833_set_freq_word(uint32_t freq_word, uint16_t type, uint8_t ch)
-{
-    uint16_t freq_reg = ad9833_freq_reg(ch);
-    uint16_t fselect  = ad9833_fselect_bit(ch);
-
-    freq_word &= AD9833_FREQ_WORD_MAX;
-
-    uint16_t fre_l = (uint16_t)(freq_word & AD9833_FREQ_DATA_MASK);
-    uint16_t fre_h = (uint16_t)((freq_word >> AD9833_FREQ_DATA_BITS) & AD9833_FREQ_DATA_MASK);
-
-    ad9833_control_word = ad9833_Reg_control_B28 | fselect | type;
-
-    ad9833_write_reg(ad9833_control_word | ad9833_Reg_control_Reset);
-    ad9833_write_reg(freq_reg | fre_l);
-    ad9833_write_reg(freq_reg | fre_h);
-    ad9833_write_reg(ad9833_control_word);
-}
-uint16_t ad9833_phase_deg_to_word(float phase_deg)
-{
-    float phase = ad9833_wrap_phase_deg(phase_deg);
-
-    /*
-     * AD9833 phase registers use 12 data bits:
-     *   phase_word = phase_deg / 360 * 4096
-     * A rounded conversion reduces steady error when the PID output is in deg.
-     */
-    uint32_t word = (uint32_t)((phase * (float)AD9833_PHASE_WORD_SCALE / 360.0f) + 0.5f);
-
-    return (uint16_t)(word & AD9833_PHASE_WORD_MAX);
-}
-void ad9833_set_phase_word(uint16_t phase_word, uint8_t ch)
-{
-    uint16_t phase_reg = ad9833_phase_reg(ch);
-
-    /*
-     * A phase register command is:
-     *   [phase register address bits] | [12-bit phase data]
-     * Mask here so callers cannot accidentally overwrite address/control bits.
-     */
-    phase_word &= AD9833_PHASE_WORD_MAX;
-
-    /*
-     * Writing PHASE0/PHASE1 only updates the stored phase value. The output
-     * uses the selected phase register, controlled by PSELECT in the control
-     * word, so update our cached control word to match the requested channel.
-     */
-    if (ch == ad9833_CH1)
-    {
-        ad9833_control_word |= ad9833_Reg_control_PSELECT;
-    }
-    else
-    {
-        ad9833_control_word &= (uint16_t)(~ad9833_Reg_control_PSELECT);
-    }
-
-    /*
-     * Write phase data first, then send the control word so PSELECT takes
-     * effect while keeping the existing waveform type and frequency selection.
-     */
-    ad9833_write_reg((uint16_t)(phase_reg | phase_word));
-    ad9833_write_reg(ad9833_control_word);
-}
-
-void ad9833_set_phase_deg(float phase_deg, uint8_t ch)
-{
-    /*
-     * Degree-level wrapper used by the phase PID layer. The PID can output a
-     * human-readable phase correction in degrees; the driver converts it to
-     * the AD9833's 12-bit register format here.
-     */
-    ad9833_set_phase_word(ad9833_phase_deg_to_word(phase_deg), ch);
-}
-
-void ad9833_sweep_start(ad9833_sweep_t *sweep, uint32_t start_hz, uint32_t stop_hz, uint32_t step_hz, uint32_t dwell_ms, uint16_t type)
-{
-    ad9833_sweep_start_ch(sweep, start_hz, stop_hz, step_hz, dwell_ms, type, ad9833_CH0);
-}
-
-void ad9833_sweep_start_ch(ad9833_sweep_t *sweep, uint32_t start_hz, uint32_t stop_hz, uint32_t step_hz, uint32_t dwell_ms, uint16_t type, uint8_t ch)
-{
-    if (sweep == 0)
-    {
-        return;
-    }
-
-    if (step_hz == 0U)
-    {
-        step_hz = 1U;
-    }
-
-    sweep->start_hz   = start_hz;
-    sweep->stop_hz    = stop_hz;
-    sweep->step_hz    = step_hz;
-    sweep->current_hz = start_hz;
-    sweep->dwell_ms   = dwell_ms;
-    sweep->last_tick  = HAL_GetTick();
-    sweep->type       = type;
-    sweep->ch         = ch;
-    sweep->enable     = 1U;
-
-    ad9833_set_freq_ch(start_hz, type, ch);
-}
-
-uint8_t ad9833_sweep_process(ad9833_sweep_t *sweep)
-{
-    uint32_t now;
-    uint32_t next_hz;
-
-    if ((sweep == 0) || (sweep->enable == 0U))
-    {
-        return 0U;
-    }
-
-    now = HAL_GetTick();
-    if ((now - sweep->last_tick) < sweep->dwell_ms)
-    {
-        return 0U;
-    }
-
-    sweep->last_tick = now;
-
-    if (sweep->start_hz <= sweep->stop_hz)
-    {
-        next_hz = sweep->current_hz + sweep->step_hz;
-        if (next_hz > sweep->stop_hz)
-        {
-            next_hz = sweep->start_hz;
-        }
-    }
-    else
-    {
-        if (sweep->current_hz <= (sweep->stop_hz + sweep->step_hz))
-        {
-            next_hz = sweep->start_hz;
-        }
-        else
-        {
-            next_hz = sweep->current_hz - sweep->step_hz;
-        }
-    }
-
-    sweep->current_hz = next_hz;
-    ad9833_set_freq_ch(next_hz, sweep->type, sweep->ch);
-
-    return 1U;
-}
-
-void ad9833_sweep_stop(ad9833_sweep_t *sweep)
-{
-    if (sweep != 0)
-    {
-        sweep->enable = 0U;
-    }
-}
-
-/* =========================================================================
- * BLL封装层（原 My_BLL/dds.c）
- * ========================================================================= */
-void waveset(uint32_t Freq, uint16_t type, uint16_t ch)
-{
-    ad9833_set_freq_ch(Freq, type, (uint8_t)ch);
-}
-
-/* =========================================================================
- * APL应用层（原 My_APL/dds_apl.c）
- * ========================================================================= */
-void dds_process(void)
-{
-    WaveFormConfig.ch   = ad9833_CH0;
-    WaveFormConfig.freq = 1000;
-    WaveFormConfig.type = ad9833_Sine;
-    waveset(WaveFormConfig.freq, WaveFormConfig.type, WaveFormConfig.ch);
-}

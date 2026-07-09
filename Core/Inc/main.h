@@ -58,14 +58,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define AD9833_CS_Pin GPIO_PIN_4
-#define AD9833_CS_GPIO_Port GPIOA
-#define AD9833_FSY_Pin GPIO_PIN_11
-#define AD9833_FSY_GPIO_Port GPIOH
 #define AD9833_SDA_Pin GPIO_PIN_12
-#define AD9833_SDA_GPIO_Port GPIOH
+#define AD9833_SDA_GPIO_Port GPIOB
+#define AD9833_CS_Pin GPIO_PIN_13
+#define AD9833_CS_GPIO_Port GPIOB
 #define AD9833_SCK_Pin GPIO_PIN_14
-#define AD9833_SCK_GPIO_Port GPIOH
+#define AD9833_SCK_GPIO_Port GPIOB
+#define AD9833_FSY_Pin GPIO_PIN_15
+#define AD9833_FSY_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
