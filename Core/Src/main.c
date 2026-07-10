@@ -129,8 +129,13 @@ int main(void)
   My_Usart_Init();
   AD9833_Init_GPIO();
   State_Init();
-
-  /* USER CODE END 2 */
+//AD9833_WaveSeting(1000,0,SIN_WAVE,0 );
+//AD9833_AmpSet(30);
+//for(int i=1;i<=255;i++){
+//	AD9833_AmpSet(i);
+//	HAL_Delay(100);
+//}
+/* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
