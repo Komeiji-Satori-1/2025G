@@ -226,6 +226,7 @@ void FFT_SingleFreqDFT_U16(const uint16_t *adc_buf,
                            FFT_SingleFreqResult_t *result)
 {
     uint16_t i;
+    uint16_t n = 0;
     float dc = 0.0f;
     float real = 0.0f;
     float imag = 0.0f;
@@ -257,6 +258,11 @@ void FFT_SingleFreqDFT_U16(const uint16_t *adc_buf,
     result->imag = imag;
     result->mag = 2.0f * sqrtf(real * real + imag * imag) / (float)len;
     result->phase = atan2f(imag, real);
+    if(n%500==0)
+    {
+        printf("DFT Result: real=%.3f, imag=%.3f, mag=%.3f, phase=%.3f\n", result->real, result->imag, result->mag, result->phase);
+    }
+    n++;
 }
 
 void FFT_CalcTransfer(const FFT_SingleFreqResult_t *input,

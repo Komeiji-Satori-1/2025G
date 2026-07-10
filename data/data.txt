@@ -1,0 +1,520 @@
+Setting frequency to 65500 Hz
+DFT Result: real=-1782418.125, imag=1262097.500, mag=4265.646, phase=2.525
+DFT Result: real=641865.312, imag=-633610.312, mag=1761.555, phase=-0.779
+Setting frequency to 65700 Hz
+DFT Result: real=1494537.875, imag=-1600695.250, mag=4277.241, phase=-0.820
+DFT Result: real=895807.875, imag=93179.328, mag=1759.064, phase=0.104
+Setting frequency to 65900 Hz
+DFT Result: real=1315171.625, imag=1750554.250, mag=4276.459, phase=0.926
+DFT Result: real=-250827.719, imag=858456.750, mag=1746.778, phase=1.855
+Setting frequency to 66100 Hz
+DFT Result: real=740502.562, imag=2059809.250, mag=4275.140, phase=1.226
+DFT Result: real=-405241.844, imag=-794777.938, mag=1742.438, phase=-2.042
+Setting frequency to 66300 Hz
+DFT Result: real=1109318.875, imag=1888457.750, mag=4277.683, phase=1.040
+DFT Result: real=-353637.344, imag=817023.062, mag=1738.815, phase=1.979
+Setting frequency to 66500 Hz
+DFT Result: real=-2173536.750, imag=-230044.031, mag=4268.899, phase=-3.036
+DFT Result: real=-438797.125, imag=-771798.188, mag=1734.014, phase=-2.088
+Setting frequency to 66700 Hz
+DFT Result: real=-1128338.250, imag=1859956.125, mag=4248.926, phase=2.116
+DFT Result: real=-884529.625, imag=59335.293, mag=1731.480, phase=3.075
+Setting frequency to 66900 Hz
+DFT Result: real=-331243.469, imag=-2162776.500, mag=4273.429, phase=-1.723
+DFT Result: real=637378.938, imag=-616058.812, mag=1731.333, phase=-0.768
+Setting frequency to 67100 Hz
+DFT Result: real=1641844.375, imag=-1458469.500, mag=4289.227, phase=-0.726
+DFT Result: real=860288.812, imag=204158.562, mag=1726.918, phase=0.233
+Setting frequency to 67300 Hz
+DFT Result: real=-2191338.750, imag=-60604.027, mag=4281.595, phase=-3.114
+DFT Result: real=880473.125, imag=-31160.527, mag=1720.751, phase=-0.035
+Setting frequency to 67500 Hz
+DFT Result: real=2069931.625, imag=-732443.375, mag=4288.473, phase=-0.340
+DFT Result: real=-809018.250, imag=335529.875, mag=1710.620, phase=2.748
+Setting frequency to 67700 Hz
+DFT Result: real=2191086.000, imag=180919.562, mag=4294.029, phase=0.082
+DFT Result: real=433648.469, imag=761547.125, mag=1711.639, phase=1.053
+Setting frequency to 67900 Hz
+DFT Result: real=-1515289.750, imag=-1589213.000, mag=4288.745, phase=-2.332
+DFT Result: real=623702.875, imag=613306.500, mag=1708.454, phase=0.777
+Setting frequency to 68100 Hz
+DFT Result: real=-386362.062, imag=2158316.250, mag=4282.471, phase=1.748
+DFT Result: real=-796615.125, imag=344145.094, mag=1694.871, phase=2.734
+Setting frequency to 68300 Hz
+DFT Result: real=-2194803.250, imag=86737.844, mag=4290.071, phase=3.102
+DFT Result: real=869230.000, imag=-40262.316, mag=1699.535, phase=-0.046
+Setting frequency to 68500 Hz
+DFT Result: real=-2169337.250, imag=344482.625, mag=4290.075, phase=2.984
+DFT Result: real=-579495.625, imag=-642215.688, mag=1689.488, phase=-2.305
+Setting frequency to 68700 Hz
+DFT Result: real=431090.500, imag=2154765.750, mag=4291.925, phase=1.373
+DFT Result: real=-153293.359, imag=-848022.750, mag=1683.138, phase=-1.750
+Setting frequency to 68900 Hz
+DFT Result: real=1660829.750, imag=-1443299.375, mag=4297.527, phase=-0.715
+DFT Result: real=-664417.188, imag=547463.000, mag=1681.465, phase=2.452
+Setting frequency to 69100 Hz
+DFT Result: real=-1867711.750, imag=1157066.000, mag=4291.167, phase=2.587
+DFT Result: real=-771311.312, imag=-377640.781, mag=1677.339, phase=-2.686
+Setting frequency to 69300 Hz
+DFT Result: real=-33938.500, imag=-2197501.500, mag=4292.507, phase=-1.586
+DFT Result: real=721883.125, imag=-463889.469, mag=1675.946, phase=-0.571
+Setting frequency to 69500 Hz
+DFT Result: real=2074089.500, imag=752575.312, mag=4309.382, phase=0.348
+DFT Result: real=-782966.562, imag=-340621.594, mag=1667.676, phase=-2.731
+Setting frequency to 69700 Hz
+DFT Result: real=2207464.000, imag=-11117.148, mag=4311.508, phase=-0.005
+DFT Result: real=449998.750, imag=727172.000, mag=1670.211, phase=1.017
+Setting frequency to 69900 Hz
+DFT Result: real=2176417.750, imag=-370763.656, mag=4312.056, phase=-0.169
+DFT Result: real=556083.562, imag=644423.438, mag=1662.464, phase=0.859
+Setting frequency to 70100 Hz
+DFT Result: real=604981.250, imag=2118250.750, mag=4302.637, phase=1.293
+DFT Result: real=-581271.562, imag=616655.750, mag=1655.141, phase=2.327
+Setting frequency to 70300 Hz
+DFT Result: real=-2071974.250, imag=745698.688, mag=4300.932, phase=2.796
+DFT Result: real=825170.750, imag=-200455.109, mag=1658.534, phase=-0.238
+Setting frequency to 70500 Hz
+DFT Result: real=-636922.188, imag=-2110687.000, mag=4306.040, phase=-1.864
+DFT Result: real=577710.500, imag=-617309.500, mag=1651.310, phase=-0.819
+Setting frequency to 70700 Hz
+DFT Result: real=-1545585.375, imag=1572373.125, mag=4306.271, phase=2.348
+DFT Result: real=666349.688, imag=-518323.750, mag=1648.837, phase=-0.661
+Setting frequency to 70900 Hz
+DFT Result: real=-943460.250, imag=1991983.000, mag=4304.908, phase=2.013
+DFT Result: real=-835379.375, imag=61294.531, mag=1635.986, phase=3.068
+Setting frequency to 71100 Hz
+DFT Result: real=-1205985.625, imag=1845388.500, mag=4305.682, phase=2.150
+DFT Result: real=559892.688, imag=-621788.375, mag=1634.219, phase=-0.838
+Setting frequency to 71300 Hz
+DFT Result: real=835725.812, imag=-2045023.125, mag=4314.840, phase=-1.183
+DFT Result: real=-435792.000, imag=712044.312, mag=1630.505, phase=2.120
+Setting frequency to 71500 Hz
+DFT Result: real=-1528153.875, imag=-1594841.375, mag=4314.052, phase=-2.335
+DFT Result: real=466552.625, imag=692849.000, mag=1631.428, phase=0.978
+Setting frequency to 71700 Hz
+DFT Result: real=1936667.125, imag=1069786.750, mag=4321.274, phase=0.505
+DFT Result: real=-4998.036, imag=831736.562, mag=1624.515, phase=1.577
+Setting frequency to 71900 Hz
+DFT Result: real=2074326.375, imag=774444.125, mag=4324.570, phase=0.357
+DFT Result: real=112467.984, imag=821422.750, mag=1619.309, phase=1.435
+Setting frequency to 72100 Hz
+DFT Result: real=-1733855.875, imag=1364883.500, mag=4309.801, phase=2.475
+DFT Result: real=-754607.625, imag=-337403.219, mag=1614.460, phase=-2.721
+Setting frequency to 72300 Hz
+DFT Result: real=-2205563.000, imag=142499.984, mag=4316.722, phase=3.077
+DFT Result: real=817751.250, imag=128321.000, mag=1616.715, phase=0.156
+Setting frequency to 72500 Hz
+DFT Result: real=1500329.875, imag=-1626436.875, mag=4321.788, phase=-0.826
+DFT Result: real=797328.938, imag=220230.516, mag=1615.596, phase=0.269
+Setting frequency to 72700 Hz
+DFT Result: real=-739710.312, imag=-2085122.750, mag=4321.180, phase=-1.912
+DFT Result: real=81474.008, imag=817028.188, mag=1603.673, phase=1.471
+Setting frequency to 72900 Hz
+DFT Result: real=2091664.375, imag=736897.125, mag=4331.394, phase=0.339
+DFT Result: real=105444.047, imag=811358.438, mag=1598.011, phase=1.442
+Setting frequency to 73100 Hz
+DFT Result: real=-2139340.750, imag=568554.062, mag=4323.441, phase=2.882
+DFT Result: real=818936.188, imag=6168.980, mag=1599.530, phase=0.008
+Setting frequency to 73300 Hz
+DFT Result: real=23583.438, imag=-2212615.750, mag=4321.761, phase=-1.560
+DFT Result: real=739243.062, imag=-348091.125, mag=1595.893, phase=-0.440
+Setting frequency to 73500 Hz
+DFT Result: real=-151154.328, imag=-2208373.250, mag=4323.320, phase=-1.639
+DFT Result: real=-175792.500, imag=791745.438, mag=1584.036, phase=1.789
+Setting frequency to 73700 Hz
+DFT Result: real=2161836.750, imag=-509006.156, mag=4337.796, phase=-0.231
+DFT Result: real=510348.125, imag=632143.500, mag=1586.799, phase=0.892
+Setting frequency to 73900 Hz
+DFT Result: real=-824045.500, imag=2055028.375, mag=4324.394, phase=1.952
+DFT Result: real=520598.500, imag=-621462.625, mag=1583.403, phase=-0.873
+Setting frequency to 74100 Hz
+DFT Result: real=766669.625, imag=2082236.875, mag=4333.778, phase=1.218
+DFT Result: real=-570654.062, imag=569485.750, mag=1574.611, phase=2.357
+Setting frequency to 74300 Hz
+DFT Result: real=-2210433.250, imag=172577.203, mag=4330.390, phase=3.064
+DFT Result: real=780312.750, imag=205405.453, mag=1575.967, phase=0.257
+Setting frequency to 74500 Hz
+DFT Result: real=-605247.000, imag=2133976.000, mag=4332.319, phase=1.847
+DFT Result: real=-793811.438, imag=115770.695, mag=1566.815, phase=2.997
+Setting frequency to 74700 Hz
+DFT Result: real=2199094.750, imag=326539.656, mag=4342.200, phase=0.147
+DFT Result: real=216541.844, imag=772395.062, mag=1566.748, phase=1.297
+Setting frequency to 74900 Hz
+DFT Result: real=1359255.125, imag=-1759612.750, mag=4342.711, phase=-0.913
+DFT Result: real=778025.688, imag=194610.891, mag=1566.398, phase=0.245
+Setting frequency to 75100 Hz
+DFT Result: real=779895.375, imag=2080789.000, mag=4340.123, phase=1.212
+DFT Result: real=-574098.188, imag=551494.438, mag=1554.833, phase=2.376
+Setting frequency to 75300 Hz
+DFT Result: real=-669810.438, imag=2118044.750, mag=4338.734, phase=1.877
+DFT Result: real=-789447.438, imag=74621.664, mag=1548.762, phase=3.047
+Setting frequency to 75500 Hz
+DFT Result: real=220219.781, imag=-2212264.000, mag=4342.183, phase=-1.472
+DFT Result: real=761573.875, imag=-231708.359, mag=1554.770, phase=-0.295
+Setting frequency to 75700 Hz
+DFT Result: real=2210375.750, imag=262277.406, mag=4347.425, phase=0.118
+DFT Result: real=214897.219, imag=762314.812, mag=1546.925, phase=1.296
+Setting frequency to 75900 Hz
+DFT Result: real=1638162.750, imag=1508929.875, mag=4350.012, phase=0.744
+DFT Result: real=-274337.094, imag=739264.312, mag=1540.089, phase=1.926
+Setting frequency to 76100 Hz
+DFT Result: real=2202169.000, imag=333895.500, mag=4350.270, phase=0.150
+DFT Result: real=183101.609, imag=768079.750, mag=1542.193, phase=1.337
+Setting frequency to 76300 Hz
+DFT Result: real=2223141.750, imag=-137778.062, mag=4350.404, phase=-0.062
+DFT Result: real=336298.250, imag=712200.812, mag=1538.297, phase=1.130
+Setting frequency to 76500 Hz
+DFT Result: real=-1663423.750, imag=1471804.250, mag=4338.042, phase=2.417
+DFT Result: real=760251.625, imag=-201335.062, mag=1536.053, phase=-0.259
+Setting frequency to 76700 Hz
+DFT Result: real=-1895160.250, imag=1160729.750, mag=4340.565, phase=2.592
+DFT Result: real=-618832.250, imag=-478297.062, mag=1527.590, phase=-2.484
+Setting frequency to 76900 Hz
+DFT Result: real=2172149.000, imag=-496561.719, mag=4351.922, phase=-0.225
+DFT Result: real=433601.719, imag=649517.625, mag=1525.294, phase=0.982
+Setting frequency to 77100 Hz
+DFT Result: real=-1599452.125, imag=-1552121.125, mag=4353.027, phase=-2.371
+DFT Result: real=317279.906, imag=-710035.938, mag=1518.946, phase=-1.151
+Setting frequency to 77300 Hz
+DFT Result: real=-87204.695, imag=-2223459.000, mag=4346.032, phase=-1.610
+DFT Result: real=721829.812, imag=-292100.312, mag=1520.882, phase=-0.385
+Setting frequency to 77500 Hz
+DFT Result: real=39682.875, imag=-2224941.250, mag=4346.280, phase=-1.553
+DFT Result: real=736139.062, imag=-246655.875, mag=1516.334, phase=-0.323
+Setting frequency to 77700 Hz
+DFT Result: real=-1865097.000, imag=-1220456.125, mag=4353.366, phase=-2.562
+DFT Result: real=344627.844, imag=692268.438, mag=1510.365, phase=1.109
+Setting frequency to 77900 Hz
+DFT Result: real=2146053.500, imag=623034.438, mag=4364.576, phase=0.283
+DFT Result: real=-519938.281, imag=-567029.312, mag=1502.584, phase=-2.313
+Setting frequency to 78100 Hz
+DFT Result: real=-176877.109, imag=-2220473.000, mag=4350.599, phase=-1.650
+DFT Result: real=709317.250, imag=-304586.125, mag=1507.711, phase=-0.406
+Setting frequency to 78300 Hz
+DFT Result: real=1003673.562, imag=1994640.625, mag=4361.181, phase=1.105
+DFT Result: real=-541865.938, imag=541214.438, mag=1495.808, phase=2.357
+Setting frequency to 78500 Hz
+DFT Result: real=1691270.625, imag=1458681.250, mag=4362.141, phase=0.712
+DFT Result: real=-294715.469, imag=704984.062, mag=1492.397, phase=1.967
+Setting frequency to 78700 Hz
+DFT Result: real=-1668226.875, imag=-1482225.875, mag=4358.566, phase=-2.415
+DFT Result: real=311404.438, imag=-698014.375, mag=1492.828, phase=-1.151
+Setting frequency to 78900 Hz
+DFT Result: real=1476205.250, imag=1677309.125, mag=4364.064, phase=0.849
+DFT Result: real=-393211.125, imag=651510.062, mag=1486.276, phase=2.114
+Setting frequency to 79100 Hz
+DFT Result: real=1733745.000, imag=1410141.875, mag=4364.861, phase=0.683
+DFT Result: real=-202838.062, imag=-731434.750, mag=1482.498, phase=-1.841
+Setting frequency to 79300 Hz
+DFT Result: real=695807.438, imag=-2124733.000, mag=4366.726, phase=-1.254
+DFT Result: real=761409.812, imag=16285.664, mag=1487.469, phase=0.021
+Setting frequency to 79500 Hz
+DFT Result: real=-2191676.750, imag=422935.656, mag=4359.593, phase=2.951
+DFT Result: real=-346237.438, imag=-672484.188, mag=1477.311, phase=-2.046
+Setting frequency to 79700 Hz
+DFT Result: real=-2071079.375, imag=828748.875, mag=4356.911, phase=2.761
+DFT Result: real=-462812.312, imag=-594754.250, mag=1471.894, phase=-2.232
+Setting frequency to 79900 Hz
+DFT Result: real=-845242.938, imag=2068898.625, mag=4365.039, phase=1.959
+DFT Result: real=655247.688, imag=-373322.781, mag=1472.920, phase=-0.518
+Setting frequency to 80100 Hz
+DFT Result: real=-2206813.750, imag=-340841.094, mag=4361.289, phase=-2.988
+DFT Result: real=-88620.359, imag=-746505.938, mag=1468.257, phase=-1.689
+Setting frequency to 80300 Hz
+DFT Result: real=935615.500, imag=2036632.750, mag=4377.462, phase=1.140
+DFT Result: real=191813.047, imag=-724365.562, mag=1463.538, phase=-1.312
+Setting frequency to 80500 Hz
+DFT Result: real=1142392.625, imag=1928173.875, mag=4377.317, phase=1.036
+DFT Result: real=-521159.125, imag=532514.500, mag=1455.279, phase=2.345
+Setting frequency to 80700 Hz
+DFT Result: real=-141667.125, imag=-2230244.500, mag=4364.726, phase=-1.634
+DFT Result: real=710035.625, imag=-233371.219, mag=1459.773, phase=-0.318
+Setting frequency to 80900 Hz
+DFT Result: real=736757.938, imag=2117288.500, mag=4378.540, phase=1.236
+DFT Result: real=-620253.562, imag=407805.375, mag=1449.818, phase=2.560
+Setting frequency to 81100 Hz
+DFT Result: real=-1042038.375, imag=-1982282.000, mag=4373.991, phase=-2.055
+DFT Result: real=-180648.844, imag=718822.938, mag=1447.607, phase=1.817
+Setting frequency to 81300 Hz
+DFT Result: real=2146472.750, imag=659201.812, mag=4385.578, phase=0.298
+DFT Result: real=-40534.660, imag=738031.312, mag=1443.640, phase=1.626
+Setting frequency to 81500 Hz
+DFT Result: real=1370764.875, imag=1777593.375, mag=4384.248, phase=0.914
+DFT Result: real=74547.180, imag=-735391.625, mag=1443.673, phase=-1.470
+Setting frequency to 81700 Hz
+DFT Result: real=484501.938, imag=-2187045.500, mag=4375.135, phase=-1.353
+DFT Result: real=741180.750, imag=-5257.211, mag=1447.655, phase=-0.007
+Setting frequency to 81900 Hz
+DFT Result: real=-2166107.500, imag=-577732.625, mag=4378.572, phase=-2.881
+DFT Result: real=29939.391, imag=-734575.625, mag=1435.909, phase=-1.530
+Setting frequency to 82100 Hz
+DFT Result: real=681756.625, imag=2134362.000, mag=4376.174, phase=1.262
+DFT Result: real=-635123.312, imag=367165.750, mag=1432.844, phase=2.617
+Setting frequency to 82300 Hz
+DFT Result: real=-1979528.375, imag=1051886.625, mag=4378.224, phase=2.653
+DFT Result: real=699747.500, imag=226091.656, mag=1436.263, phase=0.313
+Setting frequency to 82500 Hz
+DFT Result: real=-1665161.500, imag=1499472.000, mag=4376.560, phase=2.409
+DFT Result: real=731486.312, imag=59629.801, mag=1433.423, phase=0.081
+Setting frequency to 82700 Hz
+DFT Result: real=71413.055, imag=2240528.250, mag=4378.254, phase=1.539
+DFT Result: real=-709366.688, imag=168035.844, mag=1423.823, phase=2.909
+Setting frequency to 82900 Hz
+DFT Result: real=-2233824.750, imag=-185096.609, mag=4377.891, phase=-3.059
+DFT Result: real=-79807.562, imag=-722796.875, mag=1420.292, phase=-1.681
+Setting frequency to 83100 Hz
+DFT Result: real=-2148442.500, imag=642769.938, mag=4379.949, phase=2.851
+DFT Result: real=-333704.656, imag=-644473.062, mag=1417.469, phase=-2.049
+Setting frequency to 83300 Hz
+DFT Result: real=2246076.750, imag=-19912.783, mag=4387.041, phase=-0.009
+DFT Result: real=140536.109, imag=711548.938, mag=1416.591, phase=1.376
+Setting frequency to 83500 Hz
+DFT Result: real=-2164519.250, imag=-587129.188, mag=4380.343, phase=-2.877
+DFT Result: real=305694.125, imag=656561.062, mag=1414.528, phase=1.135
+Setting frequency to 83700 Hz
+DFT Result: real=-2065798.625, imag=871671.500, mag=4379.242, phase=2.742
+DFT Result: real=-388466.125, imag=-606922.062, mag=1407.416, phase=-2.140
+Setting frequency to 83900 Hz
+DFT Result: real=-1846302.750, imag=-1278612.250, mag=4386.356, phase=-2.536
+DFT Result: real=306577.969, imag=-652599.250, mag=1408.250, phase=-1.132
+Setting frequency to 84100 Hz
+DFT Result: real=889659.250, imag=-2061858.875, mag=4385.953, phase=-1.163
+DFT Result: real=699158.500, imag=175754.109, mag=1408.029, phase=0.246
+Setting frequency to 84300 Hz
+DFT Result: real=-471384.812, imag=2195688.500, mag=4386.169, phase=1.782
+DFT Result: real=651855.062, imag=-301157.875, mag=1402.462, phase=-0.433
+Setting frequency to 84500 Hz
+DFT Result: real=462809.312, imag=-2199833.250, mag=4390.605, phase=-1.363
+DFT Result: real=715297.250, imag=42828.250, mag=1399.567, phase=0.060
+Setting frequency to 84700 Hz
+DFT Result: real=395226.906, imag=2215256.000, mag=4394.993, phase=1.394
+DFT Result: real=497606.875, imag=-510049.688, mag=1391.748, phase=-0.798
+Setting frequency to 84900 Hz
+DFT Result: real=2041034.125, imag=-943407.250, mag=4391.639, phase=-0.433
+DFT Result: real=-614520.938, imag=-355725.062, mag=1386.824, phase=-2.617
+Setting frequency to 85100 Hz
+DFT Result: real=-1077458.625, imag=1967511.625, mag=4381.282, phase=2.072
+DFT Result: real=-662645.188, imag=-257251.234, mag=1388.336, phase=-2.771
+Setting frequency to 85300 Hz
+DFT Result: real=2231742.750, imag=-297663.438, mag=4397.473, phase=-0.133
+DFT Result: real=188414.922, imag=685314.625, mag=1388.171, phase=1.302
+Setting frequency to 85500 Hz
+DFT Result: real=1198589.125, imag=1908351.750, mag=4401.437, phase=1.010
+DFT Result: real=297917.906, imag=-640867.500, mag=1380.331, phase=-1.136
+Setting frequency to 85700 Hz
+DFT Result: real=-1905072.250, imag=-1198793.250, mag=4396.226, phase=-2.580
+DFT Result: real=303153.031, imag=-635650.562, mag=1375.468, phase=-1.126
+Setting frequency to 85900 Hz
+DFT Result: real=992262.188, imag=-2014736.625, mag=4386.385, phase=-1.113
+DFT Result: real=668575.062, imag=239969.516, mag=1387.376, phase=0.345
+Setting frequency to 86100 Hz
+DFT Result: real=1461470.750, imag=1716617.250, mag=4403.278, phase=0.866
+DFT Result: real=-482598.000, imag=507421.594, mag=1367.714, phase=2.331
+Setting frequency to 86300 Hz
+DFT Result: real=2095351.875, imag=-832138.250, mag=4403.399, phase=-0.378
+DFT Result: real=327480.312, imag=620754.562, mag=1370.781, phase=1.085
+Setting frequency to 86500 Hz
+DFT Result: real=1074523.500, imag=1976848.375, mag=4394.544, phase=1.073
+DFT Result: real=368500.938, imag=-593127.688, mag=1363.826, phase=-1.015
+Setting frequency to 86700 Hz
+DFT Result: real=1001311.062, imag=2020642.250, mag=4404.554, phase=1.111
+DFT Result: real=403537.812, imag=-573422.062, mag=1369.495, phase=-0.958
+Setting frequency to 86900 Hz
+DFT Result: real=1022770.250, imag=2007138.000, mag=4399.807, phase=1.100
+DFT Result: real=-585631.875, imag=364987.656, mag=1347.770, phase=2.584
+Setting frequency to 87100 Hz
+DFT Result: real=-731929.688, imag=2132838.750, mag=4404.166, phase=1.901
+DFT Result: real=-670428.062, imag=-175295.969, mag=1353.450, phase=-2.886
+Setting frequency to 87300 Hz
+DFT Result: real=1490298.375, imag=1687945.000, mag=4397.849, phase=0.848
+DFT Result: real=257354.594, imag=-646592.625, mag=1359.231, phase=-1.192
+Setting frequency to 87500 Hz
+DFT Result: real=651722.750, imag=-2117067.250, mag=4326.388, phase=-1.272
+DFT Result: real=682061.688, imag=137062.625, mag=1358.783, phase=0.198
+Setting frequency to 87700 Hz
+DFT Result: real=-1630809.375, imag=1527745.750, mag=4364.501, phase=2.389
+DFT Result: real=-506494.719, imag=-471521.656, mag=1351.570, phase=-2.392
+Setting frequency to 87900 Hz
+DFT Result: real=-2140490.500, imag=720318.188, mag=4411.019, phase=2.817
+DFT Result: real=-250555.703, imag=-639903.625, mag=1342.203, phase=-1.944
+Setting frequency to 88100 Hz
+DFT Result: real=2035060.750, imag=940028.625, mag=4378.280, phase=0.433
+DFT Result: real=-244661.062, imag=640313.562, mag=1338.796, phase=1.936
+Setting frequency to 88300 Hz
+DFT Result: real=-1047991.375, imag=1987978.625, mag=4389.252, phase=2.056
+DFT Result: real=-639204.500, imag=-316351.531, mag=1392.978, phase=-2.682
+Setting frequency to 88500 Hz
+DFT Result: real=-1984709.625, imag=-958426.188, mag=4304.704, phase=-2.692
+DFT Result: real=244013.453, imag=-634411.938, mag=1327.581, phase=-1.204
+Setting frequency to 88700 Hz
+DFT Result: real=-2200007.250, imag=437382.250, mag=4380.984, phase=2.945
+DFT Result: real=-159115.141, imag=-664875.688, mag=1335.254, phase=-1.806
+Setting frequency to 88900 Hz
+DFT Result: real=1735731.250, imag=1450317.625, mag=4417.770, phase=0.696
+DFT Result: real=-420257.844, imag=535895.625, mag=1330.135, phase=2.236
+Setting frequency to 89100 Hz
+DFT Result: real=1683962.625, imag=1508255.375, mag=4415.343, phase=0.730
+DFT Result: real=-440106.688, imag=517118.594, mag=1326.265, phase=2.276
+Setting frequency to 89300 Hz
+DFT Result: real=2014161.750, imag=1032372.812, mag=4420.557, phase=0.474
+DFT Result: real=82453.328, imag=-675089.312, mag=1328.332, phase=-1.449
+Setting frequency to 89500 Hz
+DFT Result: real=-1099015.250, imag=1970540.875, mag=4406.826, phase=2.080
+DFT Result: real=665509.062, imag=118725.789, mag=1320.344, phase=0.177
+Setting frequency to 89700 Hz
+DFT Result: real=-2113695.000, imag=776991.562, mag=4398.402, phase=2.789
+DFT Result: real=-239456.125, imag=-634743.750, mag=1325.018, phase=-1.932
+Setting frequency to 89900 Hz
+DFT Result: real=1478749.125, imag=-1700401.250, mag=4401.281, phase=-0.855
+DFT Result: real=-621974.000, imag=-262513.344, mag=1318.562, phase=-2.742
+Setting frequency to 90100 Hz
+DFT Result: real=-2106094.750, imag=803427.250, mag=4402.610, phase=2.777
+DFT Result: real=423718.281, imag=528374.500, mag=1322.825, phase=0.895
+Setting frequency to 90300 Hz
+DFT Result: real=-2066857.875, imag=-912224.375, mag=4412.530, phase=-2.726
+DFT Result: real=281815.500, imag=-612114.000, mag=1316.156, phase=-1.139
+Setting frequency to 90500 Hz
+DFT Result: real=-1504870.500, imag=-1683215.375, mag=4409.847, phase=-2.300
+DFT Result: real=515344.688, imag=-437608.406, mag=1320.465, phase=-0.704
+Setting frequency to 90700 Hz
+DFT Result: real=1250879.250, imag=-1876793.375, mag=4405.175, phase=-0.983
+DFT Result: real=554547.500, imag=384166.906, mag=1317.610, phase=0.606
+Setting frequency to 90900 Hz
+DFT Result: real=1919438.375, imag=1202267.375, mag=4423.598, phase=0.560
+DFT Result: real=-369056.906, imag=554586.750, mag=1301.094, phase=2.158
+Setting frequency to 91100 Hz
+DFT Result: real=-1904232.750, imag=1211332.875, mag=4407.935, phase=2.575
+DFT Result: real=486694.250, imag=459053.906, mag=1306.700, phase=0.756
+Setting frequency to 91300 Hz
+DFT Result: real=-2180977.750, imag=-583203.438, mag=4409.389, phase=-2.880
+DFT Result: real=200924.859, imag=-636129.125, mag=1302.942, phase=-1.265
+Setting frequency to 91500 Hz
+DFT Result: real=1643671.250, imag=-1554487.250, mag=4418.591, phase=-0.758
+DFT Result: real=438107.312, imag=504782.156, mag=1305.446, phase=0.856
+Setting frequency to 91700 Hz
+DFT Result: real=-820758.375, imag=2105651.250, mag=4413.981, phase=1.942
+DFT Result: real=-603947.938, imag=-274566.281, mag=1295.762, phase=-2.715
+Setting frequency to 91900 Hz
+DFT Result: real=-476181.125, imag=-2209877.250, mag=4415.231, phase=-1.783
+DFT Result: real=657189.438, imag=-101807.977, mag=1298.884, phase=-0.154
+Setting frequency to 92100 Hz
+DFT Result: real=-235618.906, imag=2250451.500, mag=4419.438, phase=1.675
+DFT Result: real=660972.125, imag=-50988.469, mag=1294.797, phase=-0.077
+Setting frequency to 92300 Hz
+DFT Result: real=-182557.922, imag=2255600.000, mag=4419.874, phase=1.652
+DFT Result: real=-650110.000, imag=-101139.188, mag=1285.020, phase=-2.987
+Setting frequency to 92500 Hz
+DFT Result: real=1785029.875, imag=1398232.750, mag=4428.638, phase=0.664
+DFT Result: real=-440569.469, imag=487145.906, mag=1282.852, phase=2.306
+Setting frequency to 92700 Hz
+DFT Result: real=314212.875, imag=2245461.750, mag=4428.397, phase=1.432
+DFT Result: real=-653492.750, imag=34394.129, mag=1278.120, phase=3.089
+Setting frequency to 92900 Hz
+DFT Result: real=2047848.000, imag=970586.750, mag=4426.197, phase=0.443
+DFT Result: real=-324848.594, imag=566858.562, mag=1276.058, phase=2.091
+Setting frequency to 93100 Hz
+DFT Result: real=2237215.750, imag=-307608.094, mag=4410.672, phase=-0.137
+DFT Result: real=-173216.172, imag=-633631.438, mag=1282.971, phase=-1.838
+Setting frequency to 93300 Hz
+DFT Result: real=-1685186.250, imag=-1521006.375, mag=4433.771, phase=-2.407
+DFT Result: real=482180.594, imag=-439118.406, mag=1273.766, phase=-0.739
+Setting frequency to 93500 Hz
+DFT Result: real=1543463.000, imag=-1641515.500, mag=4400.756, phase=-0.816
+DFT Result: real=-518364.094, imag=-399581.781, mag=1278.315, phase=-2.485
+Setting frequency to 93700 Hz
+DFT Result: real=-988569.625, imag=2023897.500, mag=4399.273, phase=2.025
+DFT Result: real=-548779.688, imag=-353122.812, mag=1274.562, phase=-2.570
+Setting frequency to 93900 Hz
+DFT Result: real=1004206.062, imag=2035529.500, mag=4433.125, phase=1.112
+DFT Result: real=-611390.750, imag=211735.359, mag=1263.704, phase=2.808
+Setting frequency to 94100 Hz
+DFT Result: real=-1377207.250, imag=-1802571.250, mag=4430.608, phase=-2.223
+DFT Result: real=561667.000, imag=-324288.844, mag=1266.723, phase=-0.524
+Setting frequency to 94300 Hz
+DFT Result: real=1325757.750, imag=-1823444.375, mag=4403.239, phase=-0.942
+DFT Result: real=-543719.500, imag=-352333.594, mag=1265.423, phase=-2.567
+Setting frequency to 94500 Hz
+DFT Result: real=-277537.688, imag=2235698.750, mag=4400.116, phase=1.694
+DFT Result: real=-624360.625, imag=-166642.641, mag=1262.142, phase=-2.881
+Setting frequency to 94700 Hz
+DFT Result: real=-2044980.250, imag=958545.688, mag=4411.103, phase=2.703
+DFT Result: real=-194384.656, imag=-612758.875, mag=1255.571, phase=-1.878
+Setting frequency to 94900 Hz
+DFT Result: real=-2000348.750, imag=1051988.250, mag=4414.268, phase=2.657
+DFT Result: real=-217186.016, imag=-602927.625, mag=1251.664, phase=-1.917
+Setting frequency to 95100 Hz
+DFT Result: real=750938.938, imag=2131919.500, mag=4414.663, phase=1.232
+DFT Result: real=-630586.812, imag=117913.445, mag=1252.962, phase=2.957
+Setting frequency to 95300 Hz
+DFT Result: real=-1977526.125, imag=1100566.750, mag=4420.219, phase=2.634
+DFT Result: real=311058.438, imag=561469.375, mag=1253.665, phase=1.065
+Setting frequency to 95500 Hz
+DFT Result: real=1421867.875, imag=1763206.125, mag=4423.991, phase=0.892
+DFT Result: real=-553985.375, imag=314089.031, mag=1243.807, phase=2.626
+Setting frequency to 95700 Hz
+DFT Result: real=-577153.562, imag=2188161.250, mag=4419.917, phase=1.829
+DFT Result: real=-580020.188, imag=-263575.969, mag=1244.335, phase=-2.715
+Setting frequency to 95900 Hz
+DFT Result: real=-1304011.750, imag=1849167.500, mag=4419.360, phase=2.185
+DFT Result: real=-446091.562, imag=-451784.844, mag=1240.053, phase=-2.350
+Setting frequency to 96100 Hz
+DFT Result: real=-1553152.625, imag=1642847.250, mag=4415.631, phase=2.328
+DFT Result: real=437391.312, imag=464021.719, mag=1245.456, phase=0.815
+Setting frequency to 96300 Hz
+DFT Result: real=1914363.250, imag=-1197748.500, mag=4410.513, phase=-0.559
+DFT Result: real=233389.844, imag=591255.500, mag=1241.508, phase=1.195
+Setting frequency to 96500 Hz
+DFT Result: real=523398.562, imag=-2207571.250, mag=4431.191, phase=-1.338
+DFT Result: real=-597160.000, imag=-197149.047, mag=1228.247, phase=-2.823
+Setting frequency to 96700 Hz
+DFT Result: real=2255615.000, imag=-19434.777, mag=4405.662, phase=-0.009
+DFT Result: real=-109376.148, imag=623270.062, mag=1235.927, phase=1.745
+Setting frequency to 96900 Hz
+DFT Result: real=416794.438, imag=2239572.500, mag=4449.270, phase=1.387
+DFT Result: real=-623553.812, imag=-17687.371, mag=1218.368, phase=-3.113
+Setting frequency to 97100 Hz
+DFT Result: real=-2100153.500, imag=-854159.000, mag=4428.141, phase=-2.755
+DFT Result: real=342607.219, imag=-524766.250, mag=1224.033, phase=-0.992
+Setting frequency to 97300 Hz
+DFT Result: real=1910074.375, imag=1250219.375, mag=4458.704, phase=0.580
+DFT Result: real=399171.500, imag=-478051.062, mag=1216.392, phase=-0.875
+Setting frequency to 97500 Hz
+DFT Result: real=626452.438, imag=-2167050.750, mag=4405.824, phase=-1.289
+DFT Result: real=551640.375, imag=312099.406, mag=1237.907, phase=0.515
+Setting frequency to 97700 Hz
+DFT Result: real=-2174746.500, imag=-672261.000, mag=4445.862, phase=-2.842
+DFT Result: real=298906.344, imag=-541168.062, mag=1207.480, phase=-1.066
+Setting frequency to 97900 Hz
+DFT Result: real=-1487028.000, imag=-1748391.000, mag=4482.889, phase=-2.276
+DFT Result: real=553105.750, imag=-275682.188, mag=1207.035, phase=-0.462
+Setting frequency to 98100 Hz
+DFT Result: real=-188598.031, imag=-2253766.250, mag=4417.272, phase=-1.654
+DFT Result: real=620140.562, imag=112229.062, mag=1230.887, phase=0.179
+Setting frequency to 98300 Hz
+DFT Result: real=-2271670.750, imag=-195264.703, mag=4453.218, phase=-3.056
+DFT Result: real=184457.219, imag=-585166.250, mag=1198.340, phase=-1.265
+Setting frequency to 98500 Hz
+DFT Result: real=-1901136.125, imag=-1302121.625, mag=4500.604, phase=-2.541
+DFT Result: real=462976.312, imag=-397626.344, mag=1191.973, phase=-0.710
+Setting frequency to 98700 Hz
+DFT Result: real=2049067.000, imag=-942294.062, mag=4404.976, phase=-0.431
+DFT Result: real=-155779.266, imag=-596084.250, mag=1203.327, phase=-1.826
+Setting frequency to 98900 Hz
+DFT Result: real=1677336.125, imag=1573553.375, mag=4491.987, phase=0.753
+DFT Result: real=521805.281, imag=-326436.938, mag=1202.151, phase=-0.559
+Setting frequency to 99100 Hz
+DFT Result: real=1495584.125, imag=-1660737.625, mag=4365.058, phase=-0.838
+DFT Result: real=356343.094, imag=508546.781, mag=1212.827, phase=0.960
+Setting frequency to 99300 Hz
+DFT Result: real=1610454.875, imag=-1560413.250, mag=4379.729, phase=-0.770
+DFT Result: real=-326709.406, imag=-519728.469, mag=1198.997, phase=-2.132
+Setting frequency to 99500 Hz
+DFT Result: real=-1842131.750, imag=-1358449.500, mag=4470.410, phase=-2.506
+DFT Result: real=497257.000, imag=-357100.156, mag=1195.697, phase=-0.623
+Setting frequency to 99700 Hz
+DFT Result: real=-284136.250, imag=-2204382.500, mag=4341.053, phase=-1.699
+DFT Result: real=-614940.625, imag=-90741.805, mag=1214.062, phase=-2.995
+Setting frequency to 99900 Hz
+DFT Result: real=1749281.500, imag=-1445599.875, mag=4432.236, phase=-0.691
+DFT Result: real=253438.500, imag=553338.312, mag=1188.705, phase=1.141
+Solution N = [N0, N1, N2, N3, N4]^T:

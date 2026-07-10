@@ -422,23 +422,23 @@ FILTER_TYPE get_filter_type(const analog_coef * coef) {
     printf("|H(inf)| = %.6f\n", H_inf);
     
     //判断滤波器类型
-    if (H_0 > FILTER_MODE_THR && H_inf < FILTER_MODE_THR)
+    if (H_0 > FILTER_MODE_THR_HIGH && H_inf < FILTER_MODE_THR_LOW)
     {
         HMI_send_string("t5", "LOW_PASS_FILTER");
         printf("Filter Type: LOW_PASS_FILTER\n");
         return LOW_PASS_FILTER;
-    }else if (H_0 < FILTER_MODE_THR && H_inf > FILTER_MODE_THR)
+    }else if (H_0 < FILTER_MODE_THR_LOW && H_inf > FILTER_MODE_THR_HIGH)
     {
         HMI_send_string("t5", "HIGH_PASS_FILTER");
         printf("Filter Type: HIGH_PASS_FILTER\n");
         return HIGH_PASS_FILTER;
     }
-    else if (H_0 < FILTER_MODE_THR && H_inf < FILTER_MODE_THR)
+    else if (H_0 < FILTER_MODE_THR_LOW && H_inf < FILTER_MODE_THR_LOW)
     {
         HMI_send_string("t5", "BAND_PASS_FILTER");
         printf("Filter Type: BAND_PASS_FILTER\n");
         return BAND_PASS_FILTER;
-    }else if (H_0 > FILTER_MODE_THR && H_inf > FILTER_MODE_THR)
+    }else if (H_0 < FILTER_MODE_THR_LOW && H_inf < FILTER_MODE_THR_LOW)
     {
         HMI_send_string("t5", "BAND_STOP_FILTER");
         printf("Filter Type: BAND_STOP_FILTER\n");
