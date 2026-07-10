@@ -1,4 +1,211 @@
 #include "iir.h"
+
+#define FIT_Q_STEPS        36U
+#define FIT_Q_MIN          0.25
+#define FIT_Q_MAX          50.0
+#define FIT_MAG_FLOOR_RATE 0.05
+#define FIT_MAX_FREQ_RATE  0.45
+
+static float64_t fit_freq_data[SAMPLE_NUM];
+static float64_t fit_mag_data[SAMPLE_NUM];
+static uint16_t fit_point_count = 0U;
+
+typedef struct
+{
+    FILTER_TYPE type;
+    float64_t error;
+    float64_t K;
+    float64_t w0;
+    float64_t Q;
+} fit_result;
+
+static float64_t get_model_base_mag(FILTER_TYPE type, float64_t w, float64_t w0, float64_t Q)
+{
+    float64_t x;
+    float64_t x2;
+    float64_t real_den;
+    float64_t imag_den;
+    float64_t den_mag;
+
+    if ((w0 <= EPS) || (Q <= EPS))
+    {
+        return 0.0;
+    }
+
+    x = w / w0;
+    x2 = x * x;
+    real_den = 1.0 - x2;
+    imag_den = x / Q;
+    den_mag = sqrt(real_den * real_den + imag_den * imag_den);
+
+    if (den_mag <= EPS)
+    {
+        return 0.0;
+    }
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        return 1.0 / den_mag;
+
+    case HIGH_PASS_FILTER:
+        return x2 / den_mag;
+
+    case BAND_PASS_FILTER:
+        return fabs(imag_den) / den_mag;
+
+    case BAND_STOP_FILTER:
+        return fabs(real_den) / den_mag;
+
+    default:
+        return 0.0;
+    }
+}
+
+static fit_result fit_one_filter_type(FILTER_TYPE type, const float64_t *q_values, uint16_t q_count)
+{
+    fit_result best;
+    float64_t max_mag = 0.0;
+    float64_t mag_floor;
+
+    best.type = type;
+    best.error = 1.0e300;
+    best.K = 0.0;
+    best.w0 = 0.0;
+    best.Q = 0.0;
+
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        if (fit_mag_data[i] > max_mag)
+        {
+            max_mag = fit_mag_data[i];
+        }
+    }
+
+    if (max_mag <= EPS)
+    {
+        return best;
+    }
+
+    mag_floor = max_mag * FIT_MAG_FLOOR_RATE;
+    if (mag_floor < EPS)
+    {
+        mag_floor = EPS;
+    }
+
+    for (uint16_t f0_index = 0U; f0_index < fit_point_count; f0_index++)
+    {
+        float64_t w0 = 2.0 * PI * fit_freq_data[f0_index];
+
+        if (w0 <= EPS)
+        {
+            continue;
+        }
+
+        for (uint16_t q_index = 0U; q_index < q_count; q_index++)
+        {
+            float64_t Q = q_values[q_index];
+            float64_t sum_ym = 0.0;
+            float64_t sum_mm = 0.0;
+            float64_t sum_yy = 0.0;
+            float64_t K;
+            float64_t error;
+
+            for (uint16_t i = 0U; i < fit_point_count; i++)
+            {
+                float64_t y = fit_mag_data[i];
+                float64_t w = 2.0 * PI * fit_freq_data[i];
+                float64_t m = get_model_base_mag(type, w, w0, Q);
+                float64_t weight_base = y;
+                float64_t weight;
+
+                if (weight_base < mag_floor)
+                {
+                    weight_base = mag_floor;
+                }
+
+                weight = 1.0 / (weight_base * weight_base);
+                sum_ym += weight * y * m;
+                sum_mm += weight * m * m;
+                sum_yy += weight * y * y;
+            }
+
+            if (sum_mm <= EPS)
+            {
+                continue;
+            }
+
+            K = sum_ym / sum_mm;
+            if (K <= 0.0)
+            {
+                continue;
+            }
+
+            error = sum_yy - 2.0 * K * sum_ym + K * K * sum_mm;
+            if (error < best.error)
+            {
+                best.error = error;
+                best.K = K;
+                best.w0 = w0;
+                best.Q = Q;
+            }
+        }
+    }
+
+    return best;
+}
+
+static analog_coef build_standard_analog_coef(const fit_result *fit)
+{
+    analog_coef coef = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float64_t w0;
+    float64_t w02;
+    float64_t Q;
+    float64_t K;
+
+    if (fit == NULL)
+    {
+        return coef;
+    }
+
+    w0 = fit->w0;
+    w02 = w0 * w0;
+    Q = fit->Q;
+    K = fit->K;
+
+    if ((w0 <= EPS) || (w02 <= EPS) || (Q <= EPS))
+    {
+        return coef;
+    }
+
+    coef.a1 = 1.0 / (Q * w0);
+    coef.a2 = 1.0 / w02;
+
+    switch (fit->type)
+    {
+    case LOW_PASS_FILTER:
+        coef.b0 = K;
+        break;
+
+    case HIGH_PASS_FILTER:
+        coef.b2 = K / w02;
+        break;
+
+    case BAND_PASS_FILTER:
+        coef.b1 = K / (Q * w0);
+        break;
+
+    case BAND_STOP_FILTER:
+        coef.b0 = K;
+        coef.b2 = K / w02;
+        break;
+
+    default:
+        break;
+    }
+
+    return coef;
+}
 /******************************************************************************
  * 全局变量 - 矩阵方程系数
  *
@@ -55,6 +262,7 @@ void coef_calc(const complex *sample_data)
 
     // 初始化所有系数为0 (lambda0除外)
     lambda0_coef = 500.0; // 频率点数量
+    fit_point_count = 0U;
     lambda2_coef = 0.0;
     lambda4_coef = 0.0;
     s0_coef = 0.0;
@@ -77,6 +285,13 @@ void coef_calc(const complex *sample_data)
         // 计算频率响应的模值平方: |H(jω)|^2 = Re^2 + Im^2
         modul_squre = sample_data[i].r * sample_data[i].r +
                       sample_data[i].i * sample_data[i].i;
+
+        if ((freq_table[i] > 0.0f) && (freq_table[i] <= (float)(Fs * FIT_MAX_FREQ_RATE)) && (modul_squre > (EPS * EPS)))
+        {
+            fit_freq_data[fit_point_count] = (float64_t)freq_table[i];
+            fit_mag_data[fit_point_count] = sqrt(modul_squre);
+            fit_point_count++;
+        }
 
         // 累加 Lambda 系数 (频率项)
         lambda2_coef += w2; // Σ(ω^2)
@@ -137,6 +352,63 @@ void coef_calc(const complex *sample_data)
  ******************************************************************************/
 analog_coef matrix_calc(void)
 {
+#if 1
+    analog_coef analog_coef_temp = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float64_t q_values[FIT_Q_STEPS];
+    fit_result results[4];
+    fit_result best;
+    float64_t q_ratio;
+
+    if (fit_point_count < 5U)
+    {
+        printf("Error: Not enough points for magnitude-only IIR fit!\n");
+        return analog_coef_temp;
+    }
+
+    q_ratio = pow(FIT_Q_MAX / FIT_Q_MIN, 1.0 / (float64_t)(FIT_Q_STEPS - 1U));
+    q_values[0] = FIT_Q_MIN;
+    for (uint16_t i = 1U; i < FIT_Q_STEPS; i++)
+    {
+        q_values[i] = q_values[i - 1U] * q_ratio;
+    }
+
+    results[0] = fit_one_filter_type(LOW_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[1] = fit_one_filter_type(HIGH_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[2] = fit_one_filter_type(BAND_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[3] = fit_one_filter_type(BAND_STOP_FILTER, q_values, FIT_Q_STEPS);
+
+    best = results[0];
+    for (uint8_t i = 1U; i < 4U; i++)
+    {
+        if (results[i].error < best.error)
+        {
+            best = results[i];
+        }
+    }
+
+    analog_coef_temp = build_standard_analog_coef(&best);
+
+    printf("\nMagnitude-only IIR fit:\n");
+    printf("Used points = %u\n", fit_point_count);
+    printf("LP error = %.12f\n", results[0].error);
+    printf("HP error = %.12f\n", results[1].error);
+    printf("BP error = %.12f\n", results[2].error);
+    printf("BS error = %.12f\n", results[3].error);
+    printf("Best type = %d, K = %.12f, f0 = %.6f Hz, Q = %.12f\n",
+           best.type,
+           best.K,
+           best.w0 / (2.0 * PI),
+           best.Q);
+
+    printf("Solution N = [N0, N1, N2, N3, N4]^T:\n");
+    printf("N0 = %.20f\n", analog_coef_temp.b0);
+    printf("N1 = %.20f\n", analog_coef_temp.b1);
+    printf("N2 = %.20f\n", analog_coef_temp.b2);
+    printf("N3 = %.20f\n", analog_coef_temp.a1);
+    printf("N4 = %.20f\n", analog_coef_temp.a2);
+
+    return analog_coef_temp;
+#else
 
     // ==================== 1. 构建系数矩阵 M (5x5) ====================
     // 矩阵按行优先存储
@@ -225,6 +497,7 @@ analog_coef matrix_calc(void)
     analog_coef_temp.a2 = N_data[4]; // 分母二次项系数
 
     return analog_coef_temp;
+#endif
 }
 
 /******************************************************************************
