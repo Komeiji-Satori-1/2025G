@@ -401,6 +401,7 @@ void calculate_learn_start(void)
     learn.state = LEARN_SET_FREQ;
     learn.freq = LEARN_START_FREQ_HZ;
     learn.index = 0;
+    printf("idx,freq,in_re,in_im,in_mag,in_phase,out_re,out_im,out_mag,out_phase,H_re,H_im,H_mag,H_phase\r\n");
 }
 uint8_t calculate_learn_is_done(void)
 {
@@ -452,6 +453,21 @@ void calculate_learn_proc(void)
         freq_table[learn.index] = (float)learn.freq;
         h_table[learn.index].r = h.real;
         h_table[learn.index].i = h.imag;
+        printf("%u,%lu,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\r\n",
+               learn.index,
+               learn.freq,
+               input_dft.real,
+               input_dft.imag,
+               input_dft.mag,
+               input_dft.phase,
+               output_dft.real,
+               output_dft.imag,
+               output_dft.mag,
+               output_dft.phase,
+               h.real,
+               h.imag,
+               h.mag,
+               h.phase);
         learn.state = LEARN_NEXT_FREQ;
         break;
 
