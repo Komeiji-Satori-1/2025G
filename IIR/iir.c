@@ -5,6 +5,8 @@
 #define FIT_Q_MAX          50.0
 #define FIT_MAG_FLOOR_RATE 0.05
 #define FIT_MAX_FREQ_RATE  0.45
+#define FIT_PASS_END_MIN_RATIO 0.65
+#define FIT_STOP_END_MAX_RATIO 0.55
 
 static float64_t fit_freq_data[SAMPLE_NUM];
 static float64_t fit_mag_data[SAMPLE_NUM];
@@ -18,6 +20,118 @@ typedef struct
     float64_t w0;
     float64_t Q;
 } fit_result;
+
+typedef struct
+{
+    float64_t low_ratio;
+    float64_t high_ratio;
+    float64_t trough_ratio;
+} fit_shape_feature;
+
+static fit_shape_feature calc_fit_shape_feature(void)
+{
+    fit_shape_feature shape = {0.0, 0.0, 0.0};
+    float64_t peak_mag = 0.0;
+    float64_t trough_mag = 1.0e300;
+    float64_t low_sum = 0.0;
+    float64_t high_sum = 0.0;
+    uint16_t low_count;
+    uint16_t high_count;
+    uint16_t high_start;
+
+    if (fit_point_count == 0U)
+    {
+        return shape;
+    }
+
+    low_count = fit_point_count / 20U;
+    high_count = fit_point_count / 10U;
+
+    if (low_count == 0U)
+    {
+        low_count = 1U;
+    }
+
+    if (high_count == 0U)
+    {
+        high_count = 1U;
+    }
+
+    high_start = fit_point_count - high_count;
+
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        float64_t mag = fit_mag_data[i];
+
+        if (mag > peak_mag)
+        {
+            peak_mag = mag;
+        }
+
+        if (mag < trough_mag)
+        {
+            trough_mag = mag;
+        }
+
+        if (i < low_count)
+        {
+            low_sum += mag;
+        }
+
+        if (i >= high_start)
+        {
+            high_sum += mag;
+        }
+    }
+
+    if (peak_mag <= EPS)
+    {
+        return shape;
+    }
+
+    shape.low_ratio = (low_sum / (float64_t)low_count) / peak_mag;
+    shape.high_ratio = (high_sum / (float64_t)high_count) / peak_mag;
+    shape.trough_ratio = trough_mag / peak_mag;
+
+    return shape;
+}
+
+static uint8_t is_fit_shape_allowed(FILTER_TYPE type, const fit_shape_feature *shape)
+{
+    uint8_t low_pass_end;
+    uint8_t high_pass_end;
+    uint8_t low_stop_end;
+    uint8_t high_stop_end;
+
+    if (shape == NULL)
+    {
+        return 0U;
+    }
+
+    low_pass_end = (shape->low_ratio >= FIT_PASS_END_MIN_RATIO) ? 1U : 0U;
+    high_pass_end = (shape->high_ratio >= FIT_PASS_END_MIN_RATIO) ? 1U : 0U;
+    low_stop_end = (shape->low_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
+    high_stop_end = (shape->high_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        return (uint8_t)(low_pass_end && high_stop_end);
+
+    case HIGH_PASS_FILTER:
+        return (uint8_t)(low_stop_end && high_pass_end);
+
+    case BAND_PASS_FILTER:
+        return (uint8_t)(low_stop_end && high_stop_end);
+
+    case BAND_STOP_FILTER:
+        return (uint8_t)(low_pass_end && high_pass_end &&
+                         (shape->trough_ratio <= FIT_STOP_END_MAX_RATIO));
+
+    default:
+        return 0U;
+    }
+}
 
 static float64_t get_model_base_mag(FILTER_TYPE type, float64_t w, float64_t w0, float64_t Q)
 {
@@ -357,6 +471,9 @@ analog_coef matrix_calc(void)
     float64_t q_values[FIT_Q_STEPS];
     fit_result results[4];
     fit_result best;
+    fit_shape_feature shape;
+    uint8_t shape_ok[4] = {0U, 0U, 0U, 0U};
+    uint8_t has_shape_match = 0U;
     float64_t q_ratio;
 
     if (fit_point_count < 5U)
@@ -377,12 +494,29 @@ analog_coef matrix_calc(void)
     results[2] = fit_one_filter_type(BAND_PASS_FILTER, q_values, FIT_Q_STEPS);
     results[3] = fit_one_filter_type(BAND_STOP_FILTER, q_values, FIT_Q_STEPS);
 
-    best = results[0];
-    for (uint8_t i = 1U; i < 4U; i++)
+    shape = calc_fit_shape_feature();
+    for (uint8_t i = 0U; i < 4U; i++)
     {
-        if (results[i].error < best.error)
+        shape_ok[i] = is_fit_shape_allowed(results[i].type, &shape);
+        if (shape_ok[i] != 0U)
         {
-            best = results[i];
+            if ((has_shape_match == 0U) || (results[i].error < best.error))
+            {
+                best = results[i];
+            }
+            has_shape_match = 1U;
+        }
+    }
+
+    if (has_shape_match == 0U)
+    {
+        best = results[0];
+        for (uint8_t i = 1U; i < 4U; i++)
+        {
+            if (results[i].error < best.error)
+            {
+                best = results[i];
+            }
         }
     }
 
@@ -390,10 +524,18 @@ analog_coef matrix_calc(void)
 
     printf("\nMagnitude-only IIR fit:\n");
     printf("Used points = %u\n", fit_point_count);
-    printf("LP error = %.12f\n", results[0].error);
-    printf("HP error = %.12f\n", results[1].error);
-    printf("BP error = %.12f\n", results[2].error);
-    printf("BS error = %.12f\n", results[3].error);
+    printf("Endpoint shape: low/peak = %.6f, high/peak = %.6f, trough/peak = %.6f\n",
+           shape.low_ratio,
+           shape.high_ratio,
+           shape.trough_ratio);
+    printf("LP error = %.12f, shape_ok = %u\n", results[0].error, shape_ok[0]);
+    printf("HP error = %.12f, shape_ok = %u\n", results[1].error, shape_ok[1]);
+    printf("BP error = %.12f, shape_ok = %u\n", results[2].error, shape_ok[2]);
+    printf("BS error = %.12f, shape_ok = %u\n", results[3].error, shape_ok[3]);
+    if (has_shape_match == 0U)
+    {
+        printf("Warning: no filter type passed endpoint shape rules, using minimum error only.\n");
+    }
     printf("Best type = %d, K = %.12f, f0 = %.6f Hz, Q = %.12f\n",
            best.type,
            best.K,
