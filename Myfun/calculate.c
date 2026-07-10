@@ -4,22 +4,23 @@
 
 extern void Start_ADC_Capture(void);
 extern volatile uint8_t ADC_Flag;
-extern uint16_t ADC1_IN[ADC_LEN ] ;
-extern uint16_t ADC2_OUT[ADC_LEN ];
+extern uint16_t ADC1_IN[ADC_LEN];
+extern uint16_t ADC2_OUT[ADC_LEN];
 #define VIN_AMP_TABLE_SIZE (sizeof(vin_amp_table) / sizeof(vin_amp_table[0]))
 
-#define LEARN_START_FREQ_HZ 1000U
-#define LEARN_STOP_FREQ_HZ 50000U
+#define LEARN_START_FREQ_HZ 100U
+#define LEARN_STOP_FREQ_HZ 100000U
 #define LEARN_STEP_FREQ_HZ 200U
 #define LEARN_SETTLE_MS 20U
 
-#define LEARN_POINT_NUM  (((LEARN_STOP_FREQ_HZ - LEARN_START_FREQ_HZ) / LEARN_STEP_FREQ_HZ) + 1U)
+#define LEARN_POINT_NUM (((LEARN_STOP_FREQ_HZ - LEARN_START_FREQ_HZ) / LEARN_STEP_FREQ_HZ) + 1U)
 
 float freq_table[LEARN_POINT_NUM];
 static complex h_table[LEARN_POINT_NUM];
 static analog_coef analog_coef_data;
 static digital_coef digital_coef_data;
 static uint8_t learn_done = 0;
+
 typedef enum
 {
     LEARN_IDLE = 0,
@@ -396,6 +397,7 @@ void calculate_learn_start(void)
 {
     learn_done = 0;
     learn.running = 1;
+    learn_done = 0;
     learn.state = LEARN_SET_FREQ;
     learn.freq = LEARN_START_FREQ_HZ;
     learn.index = 0;
@@ -414,6 +416,7 @@ void calculate_learn_proc(void)
         break;
 
     case LEARN_SET_FREQ:
+        printf("Setting frequency to %lu Hz\n", learn.freq);
         AD9833_WaveSeting(learn.freq, 0, SIN_WAVE, 0);
         learn.wait_tick = HAL_GetTick(); // 计时函数
         learn.state = LEARN_WAIT_STABLE;
@@ -453,14 +456,14 @@ void calculate_learn_proc(void)
         break;
 
     case LEARN_NEXT_FREQ:
-        if (learn.freq >= LEARN_STOP_FREQ_HZ)
+        if ((learn.index + 1U) >= LEARN_POINT_NUM)
         {
             learn.state = LEARN_CALC_IIR;
         }
         else
         {
-            learn.freq += LEARN_STEP_FREQ_HZ;
             learn.index++;
+            learn.freq = LEARN_START_FREQ_HZ + learn.index * LEARN_STEP_FREQ_HZ;
             learn.state = LEARN_SET_FREQ;
         }
         break;
@@ -470,7 +473,7 @@ void calculate_learn_proc(void)
         analog_coef_data = matrix_calc();
         digital_coef_data = bilinear_transform_quant(&analog_coef_data);
         // 根据扫频得到的 H(jw) 计算 IIR 参数
-        //判断滤波器类型
+        // 判断滤波器类型
         get_filter_type(&analog_coef_data);
         learn.state = LEARN_DONE;
         break;
@@ -478,6 +481,7 @@ void calculate_learn_proc(void)
     case LEARN_DONE:
         learn_done = 1;
         learn.running = 0;
+        learn_done = 1;
         learn.state = LEARN_IDLE;
         break;
 
@@ -485,4 +489,9 @@ void calculate_learn_proc(void)
         learn.state = LEARN_IDLE;
         break;
     }
+}
+
+uint8_t get_learn_done(void)
+{
+    return learn_done;
 }

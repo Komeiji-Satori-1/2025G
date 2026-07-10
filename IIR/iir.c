@@ -54,7 +54,7 @@ void coef_calc(const complex *sample_data)
     float64_t modul_squre;    // 频率响应的模值平方 |H(jω)|^2
 
     // 初始化所有系数为0 (lambda0除外)
-    lambda0_coef = 246.0; // 频率点数量
+    lambda0_coef = 500.0; // 频率点数量
     lambda2_coef = 0.0;
     lambda4_coef = 0.0;
     s0_coef = 0.0;
@@ -66,7 +66,7 @@ void coef_calc(const complex *sample_data)
     u4_coef = 0.0;
 
     // 遍历所有频率点，累加计算各项系数
-    for (uint8_t i = 0; i < SAMPLE_NUM; i++)
+    for (uint16_t i = 0; i < SAMPLE_NUM; i++)
     {
         // 计算角频率 ω = 2π * 200Hz * (i+1) = 400π * (i+1) rad/s
         w1 = 2.0 * PI * freq_table[i]; // ω
@@ -330,12 +330,12 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     // ========== 步骤0: 输入参数检查（保持原逻辑，补充Fs校验） ==========
     if (analog_coef_data == NULL)
     {
-        printf("Error: NULL pointer passed to bilinear_transform_quant\n");
+        fprintf(stderr, "Error: NULL pointer passed to bilinear_transform_quant\n");
         return result;
     }
     if (Fs <= 0 || Fs > 1e9)
     { // 补充Fs有效性检查（不修改端口，仅增强健壮性）
-        printf("Error: Invalid sampling frequency Fs = %.2f (must be >0 and <=1e9)\n", Fs);
+        fprintf(stderr, "Error: Invalid sampling frequency Fs = %.2f (must be >0 and <=1e9)\n", Fs);
         return result;
     }
 
@@ -367,7 +367,7 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     // 检查分母常数项非零（避免数值爆炸）
     if (fabs(den0) < EPS)
     {
-        printf("Error: Denominator coefficient den0 is zero!\n");
+        fprintf(stderr, "Error: Denominator coefficient den0 is zero!\n");
         return result;
     }
 

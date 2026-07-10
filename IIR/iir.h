@@ -16,7 +16,7 @@ extern "C" {
 #define PI 3.14159265358979323846
 #endif
 
-#define SAMPLE_NUM      246U
+#define SAMPLE_NUM      500U
 #define MATRIX_SIZE     5U
 #define VECTOR_SIZE     5U
 
