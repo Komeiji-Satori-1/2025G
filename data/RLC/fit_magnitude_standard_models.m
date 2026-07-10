@@ -10,17 +10,15 @@ elseif exist('inputFile', 'var')
 else
     dataFiles = {
         fullfile(scriptDir, 'NEWDATA.txt')
-        fullfile(scriptDir, 'low-pass-data.txt')
-        fullfile(scriptDir, 'high-pass-data.txt')
-        fullfile(scriptDir, 'band-pass-data.txt')
     };
 end
 
 Fs_iir = 200000;
 
 validMinMagRate = 0.025;
-passEndMinRatio = 0.65;
+passEndMinRatio = 0.60;
 stopEndMaxRatio = 0.55;
+notchSideMinRatio = 0.45;
 qMin = 0.10;
 qMax = 20.0;
 coarseF0Count = 160;
@@ -38,12 +36,12 @@ for fileIndex = 1:numel(dataFiles)
 
     fitMagnitudeFile(dataFile, validMinMagRate, qMin, qMax, ...
         coarseF0Count, coarseQCount, refineF0Count, refineQCount, refineSpanRate, ...
-        passEndMinRatio, stopEndMaxRatio);
+        passEndMinRatio, stopEndMaxRatio, notchSideMinRatio);
 end
 
 function fitMagnitudeFile(dataFile, validMinMagRate, qMin, qMax, ...
     coarseF0Count, coarseQCount, refineF0Count, refineQCount, refineSpanRate, ...
-    passEndMinRatio, stopEndMaxRatio)
+    passEndMinRatio, stopEndMaxRatio, notchSideMinRatio)
 
 [freq, mag, phase] = parseMagnitudeCsv(dataFile);
 
@@ -63,7 +61,7 @@ end
 shapeAllowed = false(1, numel(fitResults));
 for modelIndex = 1:numel(fitResults)
     shapeAllowed(modelIndex) = isShapeAllowed(fitResults(modelIndex).type, shape, ...
-        passEndMinRatio, stopEndMaxRatio);
+        passEndMinRatio, stopEndMaxRatio, notchSideMinRatio);
 end
 
 if any(shapeAllowed)
@@ -78,8 +76,10 @@ best = fitResults(bestIndex);
 
 fprintf('Parsed %d points from %s\n', numel(freq), dataFile);
 fprintf('Peak magnitude = %.12g, valid_min_mag = %.12g\n\n', peakMag, validMinMag);
-fprintf('Endpoint shape: low/peak=%.6f, high/peak=%.6f, trough/peak=%.6f\n\n', ...
-    shape.lowRatio, shape.highRatio, shape.troughRatio);
+fprintf(['Endpoint shape: low/peak=%.6f, high/peak=%.6f, ', ...
+    'trough/peak=%.6f, left_peak/peak=%.6f, right_peak/peak=%.6f\n\n'], ...
+    shape.lowRatio, shape.highRatio, shape.troughRatio, ...
+    shape.leftPeakRatio, shape.rightPeakRatio);
 
 for modelIndex = 1:numel(fitResults)
     r = fitResults(modelIndex);
@@ -180,21 +180,38 @@ function shape = calcShapeFeatures(mag)
     lowCount = max(1, round(pointCount * 0.05));
     highCount = max(1, round(pointCount * 0.10));
     peakMag = max(mag);
+    [troughMag, troughIndex] = min(mag);
 
     shape.lowAvg = mean(mag(1:lowCount));
     shape.highAvg = mean(mag(pointCount - highCount + 1:pointCount));
     shape.peakMag = peakMag;
-    shape.troughMag = min(mag);
+    shape.troughMag = troughMag;
+    shape.leftPeakMag = 0;
+    shape.rightPeakMag = 0;
+
+    if troughIndex > 1
+        shape.leftPeakMag = max(mag(1:troughIndex - 1));
+    end
+
+    if troughIndex < pointCount
+        shape.rightPeakMag = max(mag(troughIndex + 1:pointCount));
+    end
+
     shape.lowRatio = shape.lowAvg / max(peakMag, eps);
     shape.highRatio = shape.highAvg / max(peakMag, eps);
     shape.troughRatio = shape.troughMag / max(peakMag, eps);
+    shape.leftPeakRatio = shape.leftPeakMag / max(peakMag, eps);
+    shape.rightPeakRatio = shape.rightPeakMag / max(peakMag, eps);
 end
 
-function allowed = isShapeAllowed(type, shape, passEndMinRatio, stopEndMaxRatio)
+function allowed = isShapeAllowed(type, shape, passEndMinRatio, stopEndMaxRatio, notchSideMinRatio)
     lowPassEnd = shape.lowRatio >= passEndMinRatio;
     highPassEnd = shape.highRatio >= passEndMinRatio;
     lowStopEnd = shape.lowRatio <= stopEndMaxRatio;
     highStopEnd = shape.highRatio <= stopEndMaxRatio;
+    hasNotchBetweenPassbands = (shape.troughRatio <= stopEndMaxRatio) && ...
+        (shape.leftPeakRatio >= notchSideMinRatio) && ...
+        (shape.rightPeakRatio >= notchSideMinRatio);
 
     switch type
         case 'LOW_PASS'
@@ -204,7 +221,8 @@ function allowed = isShapeAllowed(type, shape, passEndMinRatio, stopEndMaxRatio)
         case 'BAND_PASS'
             allowed = lowStopEnd && highStopEnd;
         case 'BAND_STOP'
-            allowed = lowPassEnd && highPassEnd && (shape.troughRatio <= stopEndMaxRatio);
+            allowed = (lowPassEnd && highPassEnd && (shape.troughRatio <= stopEndMaxRatio)) || ...
+                hasNotchBetweenPassbands;
         otherwise
             allowed = false;
     end

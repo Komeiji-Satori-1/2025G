@@ -7,6 +7,7 @@
 #define FIT_MAX_FREQ_RATE  0.45
 #define FIT_PASS_END_MIN_RATIO 0.60
 #define FIT_STOP_END_MAX_RATIO 0.55
+#define FIT_NOTCH_SIDE_MIN_RATIO 0.45
 
 static float64_t fit_freq_data[SAMPLE_NUM];
 static float64_t fit_mag_data[SAMPLE_NUM];
@@ -27,6 +28,8 @@ typedef struct
     float64_t low_ratio;
     float64_t high_ratio;
     float64_t trough_ratio;
+    float64_t left_peak_ratio;
+    float64_t right_peak_ratio;
 } fit_shape_feature;
 
 static fit_shape_feature calc_fit_shape_feature(void)
@@ -36,9 +39,12 @@ static fit_shape_feature calc_fit_shape_feature(void)
     float64_t trough_mag = 1.0e300;
     float64_t low_sum = 0.0;
     float64_t high_sum = 0.0;
+    float64_t left_peak_mag = 0.0;
+    float64_t right_peak_mag = 0.0;
     uint16_t low_count;
     uint16_t high_count;
     uint16_t high_start;
+    uint16_t trough_index = 0U;
 
     if (fit_point_count == 0U)
     {
@@ -72,6 +78,7 @@ static fit_shape_feature calc_fit_shape_feature(void)
         if (mag < trough_mag)
         {
             trough_mag = mag;
+            trough_index = i;
         }
 
         if (i < low_count)
@@ -90,9 +97,26 @@ static fit_shape_feature calc_fit_shape_feature(void)
         return shape;
     }
 
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        float64_t mag = fit_mag_data[i];
+
+        if ((i < trough_index) && (mag > left_peak_mag))
+        {
+            left_peak_mag = mag;
+        }
+
+        if ((i > trough_index) && (mag > right_peak_mag))
+        {
+            right_peak_mag = mag;
+        }
+    }
+
     shape.low_ratio = (low_sum / (float64_t)low_count) / peak_mag;
     shape.high_ratio = (high_sum / (float64_t)high_count) / peak_mag;
     shape.trough_ratio = trough_mag / peak_mag;
+    shape.left_peak_ratio = left_peak_mag / peak_mag;
+    shape.right_peak_ratio = right_peak_mag / peak_mag;
 
     return shape;
 }
@@ -103,6 +127,7 @@ static uint8_t is_fit_shape_allowed(FILTER_TYPE type, const fit_shape_feature *s
     uint8_t high_pass_end;
     uint8_t low_stop_end;
     uint8_t high_stop_end;
+    uint8_t has_notch_between_passbands;
 
     if (shape == NULL)
     {
@@ -113,6 +138,11 @@ static uint8_t is_fit_shape_allowed(FILTER_TYPE type, const fit_shape_feature *s
     high_pass_end = (shape->high_ratio >= FIT_PASS_END_MIN_RATIO) ? 1U : 0U;
     low_stop_end = (shape->low_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
     high_stop_end = (shape->high_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
+    has_notch_between_passbands = ((shape->trough_ratio <= FIT_STOP_END_MAX_RATIO) &&
+                                   (shape->left_peak_ratio >= FIT_NOTCH_SIDE_MIN_RATIO) &&
+                                   (shape->right_peak_ratio >= FIT_NOTCH_SIDE_MIN_RATIO))
+                                      ? 1U
+                                      : 0U;
 
     switch (type)
     {
@@ -126,8 +156,9 @@ static uint8_t is_fit_shape_allowed(FILTER_TYPE type, const fit_shape_feature *s
         return (uint8_t)(low_stop_end && high_stop_end);
 
     case BAND_STOP_FILTER:
-        return (uint8_t)(low_pass_end && high_pass_end &&
-                         (shape->trough_ratio <= FIT_STOP_END_MAX_RATIO));
+        return (uint8_t)((low_pass_end && high_pass_end &&
+                          (shape->trough_ratio <= FIT_STOP_END_MAX_RATIO)) ||
+                         has_notch_between_passbands);
 
     default:
         return 0U;
@@ -526,10 +557,12 @@ analog_coef matrix_calc(void)
 
     printf("\nMagnitude-only IIR fit:\n");
     printf("Used points = %u\n", fit_point_count);
-    printf("Endpoint shape: low/peak = %.6f, high/peak = %.6f, trough/peak = %.6f\n",
+    printf("Endpoint shape: low/peak = %.6f, high/peak = %.6f, trough/peak = %.6f, left_peak/peak = %.6f, right_peak/peak = %.6f\n",
            shape.low_ratio,
            shape.high_ratio,
-           shape.trough_ratio);
+           shape.trough_ratio,
+           shape.left_peak_ratio,
+           shape.right_peak_ratio);
     printf("LP error = %.12f, shape_ok = %u\n", results[0].error, shape_ok[0]);
     printf("HP error = %.12f, shape_ok = %u\n", results[1].error, shape_ok[1]);
     printf("BP error = %.12f, shape_ok = %u\n", results[2].error, shape_ok[2]);

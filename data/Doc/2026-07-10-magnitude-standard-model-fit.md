@@ -123,6 +123,31 @@ The fitted notch is deeper than the measured minimum. That is expected for the i
 
 This script only fits magnitude. It does not validate phase or time delay.
 
+## Notch Near Sweep Edge Rule
+
+For band-stop data where the notch is close to one sweep edge, endpoint averages can be misleading. The script now also calculates:
+
+```text
+left_peak/peak
+right_peak/peak
+```
+
+For band-stop, the shape rule accepts either passband-like low and high endpoints, or a deep notch with recovery on both sides:
+
+```text
+trough/peak <= stopEndMaxRatio
+left_peak/peak >= notchSideMinRatio
+right_peak/peak >= notchSideMinRatio
+```
+
+Current threshold:
+
+```text
+notchSideMinRatio = 0.45
+```
+
+The `NEWDATA.txt` case that previously selected `BAND_PASS` now selects `BAND_STOP`.
+
 ## Batch Results
 
 `low-pass-data.txt`:
