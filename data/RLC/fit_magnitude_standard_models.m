@@ -9,7 +9,7 @@ elseif exist('inputFile', 'var')
     dataFiles = {inputFile};
 else
     dataFiles = {
-        fullfile(scriptDir, 'data.txt')
+        fullfile(scriptDir, 'NEWDATA.txt')
         fullfile(scriptDir, 'low-pass-data.txt')
         fullfile(scriptDir, 'high-pass-data.txt')
         fullfile(scriptDir, 'band-pass-data.txt')
