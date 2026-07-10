@@ -1,16 +1,17 @@
 #include "iir.h"
 
 #define FIT_Q_STEPS        36U
-#define FIT_Q_MIN          0.25
+#define FIT_Q_MIN          0.10
 #define FIT_Q_MAX          50.0
 #define FIT_MAG_FLOOR_RATE 0.05
 #define FIT_MAX_FREQ_RATE  0.45
-#define FIT_PASS_END_MIN_RATIO 0.65
+#define FIT_PASS_END_MIN_RATIO 0.60
 #define FIT_STOP_END_MAX_RATIO 0.55
 
 static float64_t fit_freq_data[SAMPLE_NUM];
 static float64_t fit_mag_data[SAMPLE_NUM];
 static uint16_t fit_point_count = 0U;
+static FILTER_TYPE last_fit_filter_type = LOW_PASS_FILTER;
 
 typedef struct
 {
@@ -520,6 +521,7 @@ analog_coef matrix_calc(void)
         }
     }
 
+    last_fit_filter_type = best.type;
     analog_coef_temp = build_standard_analog_coef(&best);
 
     printf("\nMagnitude-only IIR fit:\n");
@@ -810,6 +812,44 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     printf("a1 = %lld, a2 = %lld\n", result.a1, result.a2);
 
     return result;
+}
+
+FILTER_TYPE get_last_fit_filter_type(void)
+{
+    return last_fit_filter_type;
+}
+
+void show_filter_type(FILTER_TYPE type)
+{
+    printf("\nFilter Type From Magnitude Fit:\n");
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        HMI_send_string("t5", "LOW_PASS_FILTER");
+        printf("Filter Type: LOW_PASS_FILTER\n");
+        break;
+
+    case HIGH_PASS_FILTER:
+        HMI_send_string("t5", "HIGH_PASS_FILTER");
+        printf("Filter Type: HIGH_PASS_FILTER\n");
+        break;
+
+    case BAND_PASS_FILTER:
+        HMI_send_string("t5", "BAND_PASS_FILTER");
+        printf("Filter Type: BAND_PASS_FILTER\n");
+        break;
+
+    case BAND_STOP_FILTER:
+        HMI_send_string("t5", "BAND_STOP_FILTER");
+        printf("Filter Type: BAND_STOP_FILTER\n");
+        break;
+
+    default:
+        HMI_send_string("t5", "UNKNOWN_FILTER");
+        printf("Filter Type: UNKNOWN\n");
+        break;
+    }
 }
 
 /******************************************************************************
