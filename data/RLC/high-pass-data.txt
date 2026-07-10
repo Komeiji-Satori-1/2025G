@@ -1,0 +1,1033 @@
+freq,H_mag,H_phase
+Setting frequency to 100 Hz
+100,0.048806,2.099674
+Setting frequency to 300 Hz
+300,0.030251,1.644850
+Setting frequency to 500 Hz
+500,0.063666,1.499744
+Setting frequency to 700 Hz
+700,0.087334,1.533229
+Setting frequency to 900 Hz
+900,0.109732,1.518407
+Setting frequency to 1100 Hz
+1100,0.124129,1.584069
+Setting frequency to 1300 Hz
+1300,0.144246,1.497002
+Setting frequency to 1500 Hz
+1500,0.170098,1.486136
+Setting frequency to 1700 Hz
+1700,0.196712,1.440221
+Setting frequency to 1900 Hz
+1900,0.221136,1.455891
+Setting frequency to 2100 Hz
+2100,0.241863,1.463388
+Setting frequency to 2300 Hz
+2300,0.259345,1.453642
+Setting frequency to 2500 Hz
+2500,0.276635,1.429741
+Setting frequency to 2700 Hz
+2700,0.300149,1.401680
+Setting frequency to 2900 Hz
+2900,0.327310,1.382352
+Setting frequency to 3100 Hz
+3100,0.354750,1.477662
+Setting frequency to 3300 Hz
+3300,0.376230,1.484808
+Setting frequency to 3500 Hz
+3500,0.393997,1.375965
+Setting frequency to 3700 Hz
+3700,0.410123,1.481080
+Setting frequency to 3900 Hz
+3900,0.429645,1.471193
+Setting frequency to 4100 Hz
+4100,0.450321,1.338022
+Setting frequency to 4300 Hz
+4300,0.469848,1.465994
+Setting frequency to 4500 Hz
+4500,0.487873,1.319039
+Setting frequency to 4700 Hz
+4700,0.507059,1.452269
+Setting frequency to 4900 Hz
+4900,0.528268,1.291601
+Setting frequency to 5100 Hz
+5100,0.550702,1.285470
+Setting frequency to 5300 Hz
+5300,0.568138,1.454138
+Setting frequency to 5500 Hz
+5500,0.581001,1.282108
+Setting frequency to 5700 Hz
+5700,0.593848,1.268511
+Setting frequency to 5900 Hz
+5900,0.612734,1.432243
+Setting frequency to 6100 Hz
+6100,0.636054,1.432013
+Setting frequency to 6300 Hz
+6300,0.653084,1.239525
+Setting frequency to 6500 Hz
+6500,0.665111,1.236010
+Setting frequency to 6700 Hz
+6700,0.674700,1.434084
+Setting frequency to 6900 Hz
+6900,0.692103,1.422772
+Setting frequency to 7100 Hz
+7100,0.712478,1.198857
+Setting frequency to 7300 Hz
+7300,0.728488,1.199723
+Setting frequency to 7500 Hz
+7500,0.738608,1.195646
+Setting frequency to 7700 Hz
+7700,0.749992,1.185028
+Setting frequency to 7900 Hz
+7900,0.764915,1.174135
+Setting frequency to 8100 Hz
+8100,0.779757,1.420453
+Setting frequency to 8300 Hz
+8300,0.792966,1.158785
+Setting frequency to 8500 Hz
+8500,0.805737,1.150951
+Setting frequency to 8700 Hz
+8700,0.820895,1.145537
+Setting frequency to 8900 Hz
+8900,0.832588,1.143376
+Setting frequency to 9100 Hz
+9100,0.843694,1.135496
+Setting frequency to 9300 Hz
+9300,0.857525,1.415109
+Setting frequency to 9500 Hz
+9500,0.874638,1.120104
+Setting frequency to 9700 Hz
+9700,0.884727,1.118456
+Setting frequency to 9900 Hz
+9900,0.888799,1.420631
+Setting frequency to 10100 Hz
+10100,0.904304,1.095157
+Setting frequency to 10300 Hz
+10300,0.921109,1.096993
+Setting frequency to 10500 Hz
+10500,0.923302,1.095804
+Setting frequency to 10700 Hz
+10700,0.931102,1.083682
+Setting frequency to 10900 Hz
+10900,0.946713,1.425868
+Setting frequency to 11100 Hz
+11100,0.949491,1.425149
+Setting frequency to 11300 Hz
+11300,0.961215,1.066853
+Setting frequency to 11500 Hz
+11500,0.975176,1.429274
+Setting frequency to 11700 Hz
+11700,0.975732,1.064916
+Setting frequency to 11900 Hz
+11900,0.985720,1.430376
+Setting frequency to 12100 Hz
+12100,0.992734,1.054016
+Setting frequency to 12300 Hz
+12300,0.999828,1.434845
+Setting frequency to 12500 Hz
+12500,1.007821,1.439710
+Setting frequency to 12700 Hz
+12700,1.012345,1.443450
+Setting frequency to 12900 Hz
+12900,1.018471,1.039470
+Setting frequency to 13100 Hz
+13100,1.024096,1.032957
+Setting frequency to 13300 Hz
+13300,1.034764,1.029349
+Setting frequency to 13500 Hz
+13500,1.039745,1.032160
+Setting frequency to 13700 Hz
+13700,1.042345,1.024129
+Setting frequency to 13900 Hz
+13900,1.052324,1.024591
+Setting frequency to 14100 Hz
+14100,1.051449,1.023422
+Setting frequency to 14300 Hz
+14300,1.065264,1.464750
+Setting frequency to 14500 Hz
+14500,1.064815,1.019832
+Setting frequency to 14700 Hz
+14700,1.066550,1.011085
+Setting frequency to 14900 Hz
+14900,1.073010,1.482890
+Setting frequency to 15100 Hz
+15100,1.072934,1.009774
+Setting frequency to 15300 Hz
+15300,1.083467,1.004337
+Setting frequency to 15500 Hz
+15500,1.086859,1.009202
+Setting frequency to 15700 Hz
+15700,1.087327,1.496091
+Setting frequency to 15900 Hz
+15900,1.093519,1.003819
+Setting frequency to 16100 Hz
+16100,1.093757,1.000542
+Setting frequency to 16300 Hz
+16300,1.100684,0.998671
+Setting frequency to 16500 Hz
+16500,1.103689,0.998486
+Setting frequency to 16700 Hz
+16700,1.105828,1.523445
+Setting frequency to 16900 Hz
+16900,1.105847,0.995066
+Setting frequency to 17100 Hz
+17100,1.108961,0.993927
+Setting frequency to 17300 Hz
+17300,1.115855,1.538595
+Setting frequency to 17500 Hz
+17500,1.118692,1.545556
+Setting frequency to 17700 Hz
+17700,1.115067,1.549129
+Setting frequency to 17900 Hz
+17900,1.119915,0.990794
+Setting frequency to 18100 Hz
+18100,1.124570,0.990880
+Setting frequency to 18300 Hz
+18300,1.127178,1.572361
+Setting frequency to 18500 Hz
+18500,1.127776,0.995973
+Setting frequency to 18700 Hz
+18700,1.129844,0.995024
+Setting frequency to 18900 Hz
+18900,1.124502,0.993007
+Setting frequency to 19100 Hz
+19100,1.134558,0.992416
+Setting frequency to 19300 Hz
+19300,1.129558,0.997204
+Setting frequency to 19500 Hz
+19500,1.134387,1.606862
+Setting frequency to 19700 Hz
+19700,1.137369,1.611564
+Setting frequency to 19900 Hz
+19900,1.135964,1.623915
+Setting frequency to 20100 Hz
+20100,1.136845,1.628392
+Setting frequency to 20300 Hz
+20300,1.137649,0.998573
+Setting frequency to 20500 Hz
+20500,1.137678,0.999312
+Setting frequency to 20700 Hz
+20700,1.139910,0.998810
+Setting frequency to 20900 Hz
+20900,1.141119,1.001290
+Setting frequency to 21100 Hz
+21100,1.138596,1.663395
+Setting frequency to 21300 Hz
+21300,1.143765,1.001606
+Setting frequency to 21500 Hz
+21500,1.143203,1.006020
+Setting frequency to 21700 Hz
+21700,1.145210,1.006479
+Setting frequency to 21900 Hz
+21900,1.140516,1.007952
+Setting frequency to 22100 Hz
+22100,1.147247,1.006930
+Setting frequency to 22300 Hz
+22300,1.145355,1.012878
+Setting frequency to 22500 Hz
+22500,1.146434,1.013500
+Setting frequency to 22700 Hz
+22700,1.141814,1.014996
+Setting frequency to 22900 Hz
+22900,1.148964,1.013383
+Setting frequency to 23100 Hz
+23100,1.145312,1.020515
+Setting frequency to 23300 Hz
+23300,1.146675,1.754767
+Setting frequency to 23500 Hz
+23500,1.143676,1.757785
+Setting frequency to 23700 Hz
+23700,1.149421,1.024059
+Setting frequency to 23900 Hz
+23900,1.145953,1.780937
+Setting frequency to 24100 Hz
+24100,1.146065,1.030390
+Setting frequency to 24300 Hz
+24300,1.144335,1.030721
+Setting frequency to 24500 Hz
+24500,1.148899,1.803885
+Setting frequency to 24700 Hz
+24700,1.146417,1.037783
+Setting frequency to 24900 Hz
+24900,1.144217,1.039693
+Setting frequency to 25100 Hz
+25100,1.146400,1.040179
+Setting frequency to 25300 Hz
+25300,1.146469,1.044835
+Setting frequency to 25500 Hz
+25500,1.145730,1.047393
+Setting frequency to 25700 Hz
+25700,1.144775,1.858151
+Setting frequency to 25900 Hz
+25900,1.145779,1.054236
+Setting frequency to 26100 Hz
+26100,1.145992,1.056770
+Setting frequency to 26300 Hz
+26300,1.143765,1.886755
+Setting frequency to 26500 Hz
+26500,1.143696,1.896823
+Setting frequency to 26700 Hz
+26700,1.145457,1.067088
+Setting frequency to 26900 Hz
+26900,1.145369,1.069041
+Setting frequency to 27100 Hz
+27100,1.143813,1.925495
+Setting frequency to 27300 Hz
+27300,1.143487,1.934738
+Setting frequency to 27500 Hz
+27500,1.145831,1.077727
+Setting frequency to 27700 Hz
+27700,1.142686,1.082703
+Setting frequency to 27900 Hz
+27900,1.144066,1.083214
+Setting frequency to 28100 Hz
+28100,1.144131,1.970204
+Setting frequency to 28300 Hz
+28300,1.142404,1.089901
+Setting frequency to 28500 Hz
+28500,1.138861,1.092561
+Setting frequency to 28700 Hz
+28700,1.138971,1.996988
+Setting frequency to 28900 Hz
+28900,1.140271,2.007581
+Setting frequency to 29100 Hz
+29100,1.137019,1.103766
+Setting frequency to 29300 Hz
+29300,1.138023,1.107870
+Setting frequency to 29500 Hz
+29500,1.135359,1.110447
+Setting frequency to 29700 Hz
+29700,1.136003,1.114829
+Setting frequency to 29900 Hz
+29900,1.133214,2.056248
+Setting frequency to 30100 Hz
+30100,1.131630,2.068849
+Setting frequency to 30300 Hz
+30300,1.130972,1.125764
+Setting frequency to 30500 Hz
+30500,1.136379,1.131263
+Setting frequency to 30700 Hz
+30700,1.134151,1.135161
+Setting frequency to 30900 Hz
+30900,1.129369,1.140101
+Setting frequency to 31100 Hz
+31100,1.134286,2.117378
+Setting frequency to 31300 Hz
+31300,1.129490,2.130222
+Setting frequency to 31500 Hz
+31500,1.130268,1.150508
+Setting frequency to 31700 Hz
+31700,1.130167,1.157491
+Setting frequency to 31900 Hz
+31900,1.126006,1.156943
+Setting frequency to 32100 Hz
+32100,1.125320,1.161323
+Setting frequency to 32300 Hz
+32300,1.126362,2.182674
+Setting frequency to 32500 Hz
+32500,1.129325,1.172743
+Setting frequency to 32700 Hz
+32700,1.127533,1.175905
+Setting frequency to 32900 Hz
+32900,1.124767,2.214861
+Setting frequency to 33100 Hz
+33100,1.124980,1.184933
+Setting frequency to 33300 Hz
+33300,1.124275,2.236348
+Setting frequency to 33500 Hz
+33500,1.121225,1.193883
+Setting frequency to 33700 Hz
+33700,1.119994,2.256020
+Setting frequency to 33900 Hz
+33900,1.122858,1.202868
+Setting frequency to 34100 Hz
+34100,1.119559,1.203658
+Setting frequency to 34300 Hz
+34300,1.118049,1.212300
+Setting frequency to 34500 Hz
+34500,1.116837,1.215000
+Setting frequency to 34700 Hz
+34700,1.115812,1.217015
+Setting frequency to 34900 Hz
+34900,1.121964,1.222954
+Setting frequency to 35100 Hz
+35100,1.115155,2.332097
+Setting frequency to 35300 Hz
+35300,1.116574,2.343422
+Setting frequency to 35500 Hz
+35500,1.117015,1.237040
+Setting frequency to 35700 Hz
+35700,1.113627,1.240211
+Setting frequency to 35900 Hz
+35900,1.115854,1.248800
+Setting frequency to 36100 Hz
+36100,1.114997,1.255191
+Setting frequency to 36300 Hz
+36300,1.111675,2.398085
+Setting frequency to 36500 Hz
+36500,1.114532,2.409971
+Setting frequency to 36700 Hz
+36700,1.110655,2.419597
+Setting frequency to 36900 Hz
+36900,1.114049,2.431371
+Setting frequency to 37100 Hz
+37100,1.108873,2.441328
+Setting frequency to 37300 Hz
+37300,1.109933,1.279423
+Setting frequency to 37500 Hz
+37500,1.109094,1.285019
+Setting frequency to 37700 Hz
+37700,1.107422,1.288676
+Setting frequency to 37900 Hz
+37900,1.106265,2.483941
+Setting frequency to 38100 Hz
+38100,1.108112,1.300863
+Setting frequency to 38300 Hz
+38300,1.105645,1.302202
+Setting frequency to 38500 Hz
+38500,1.106329,1.307150
+Setting frequency to 38700 Hz
+38700,1.105657,1.316957
+Setting frequency to 38900 Hz
+38900,1.106376,1.319535
+Setting frequency to 39100 Hz
+39100,1.101393,1.322029
+Setting frequency to 39300 Hz
+39300,1.104032,1.329573
+Setting frequency to 39500 Hz
+39500,1.104239,1.336913
+Setting frequency to 39700 Hz
+39700,1.099384,1.337121
+Setting frequency to 39900 Hz
+39900,1.097656,2.596903
+Setting frequency to 40100 Hz
+40100,1.099766,2.611346
+Setting frequency to 40300 Hz
+40300,1.102227,1.355191
+Setting frequency to 40500 Hz
+40500,1.100940,1.358437
+Setting frequency to 40700 Hz
+40700,1.095657,2.643512
+Setting frequency to 40900 Hz
+40900,1.095903,2.656063
+Setting frequency to 41100 Hz
+41100,1.098323,1.374901
+Setting frequency to 41300 Hz
+41300,1.093838,1.380510
+Setting frequency to 41500 Hz
+41500,1.093323,1.386535
+Setting frequency to 41700 Hz
+41700,1.093698,2.702562
+Setting frequency to 41900 Hz
+41900,1.092926,1.395626
+Setting frequency to 42100 Hz
+42100,1.093463,2.725669
+Setting frequency to 42300 Hz
+42300,1.092570,1.407071
+Setting frequency to 42500 Hz
+42500,1.092301,1.412909
+Setting frequency to 42700 Hz
+42700,1.088788,1.420067
+Setting frequency to 42900 Hz
+42900,1.090065,1.424849
+Setting frequency to 43100 Hz
+43100,1.086849,1.428321
+Setting frequency to 43300 Hz
+43300,1.088840,1.433273
+Setting frequency to 43500 Hz
+43500,1.089515,2.805641
+Setting frequency to 43700 Hz
+43700,1.083687,1.443603
+Setting frequency to 43900 Hz
+43900,1.088267,1.449763
+Setting frequency to 44100 Hz
+44100,1.083159,1.457341
+Setting frequency to 44300 Hz
+44300,1.084543,1.457814
+Setting frequency to 44500 Hz
+44500,1.083987,1.465906
+Setting frequency to 44700 Hz
+44700,1.084700,1.472334
+Setting frequency to 44900 Hz
+44900,1.082986,1.475836
+Setting frequency to 45100 Hz
+45100,1.080822,1.482820
+Setting frequency to 45300 Hz
+45300,1.080095,2.909200
+Setting frequency to 45500 Hz
+45500,1.082747,1.493943
+Setting frequency to 45700 Hz
+45700,1.081594,1.496603
+Setting frequency to 45900 Hz
+45900,1.081038,2.943474
+Setting frequency to 46100 Hz
+46100,1.077399,1.508789
+Setting frequency to 46300 Hz
+46300,1.079331,1.514359
+Setting frequency to 46500 Hz
+46500,1.075974,1.518244
+Setting frequency to 46700 Hz
+46700,1.078470,1.527230
+Setting frequency to 46900 Hz
+46900,1.077741,1.531470
+Setting frequency to 47100 Hz
+47100,1.078252,3.015524
+Setting frequency to 47300 Hz
+47300,1.076264,3.029658
+Setting frequency to 47500 Hz
+47500,1.072943,1.550391
+Setting frequency to 47700 Hz
+47700,1.074436,1.549852
+Setting frequency to 47900 Hz
+47900,1.075690,1.557514
+Setting frequency to 48100 Hz
+48100,1.073540,3.077548
+Setting frequency to 48300 Hz
+48300,1.070540,3.089128
+Setting frequency to 48500 Hz
+48500,1.068164,1.575997
+Setting frequency to 48700 Hz
+48700,1.069379,3.111671
+Setting frequency to 48900 Hz
+48900,1.070753,1.587083
+Setting frequency to 49100 Hz
+49100,1.068823,3.136628
+Setting frequency to 49300 Hz
+49300,1.067027,-3.136846
+Setting frequency to 49500 Hz
+49500,1.068523,-3.125304
+Setting frequency to 49700 Hz
+49700,1.067653,-3.114244
+Setting frequency to 49900 Hz
+49900,1.065789,1.616760
+Setting frequency to 50100 Hz
+50100,1.069189,-3.087179
+Setting frequency to 50300 Hz
+50300,1.067467,1.625556
+Setting frequency to 50500 Hz
+50500,1.067187,1.633032
+Setting frequency to 50700 Hz
+50700,1.067390,-3.052142
+Setting frequency to 50900 Hz
+50900,1.066351,1.641877
+Setting frequency to 51100 Hz
+51100,1.065598,1.648344
+Setting frequency to 51300 Hz
+51300,1.063075,-3.014191
+Setting frequency to 51500 Hz
+51500,1.062708,-3.001966
+Setting frequency to 51700 Hz
+51700,1.058828,1.663826
+Setting frequency to 51900 Hz
+51900,1.064030,-2.980476
+Setting frequency to 52100 Hz
+52100,1.062721,1.678838
+Setting frequency to 52300 Hz
+52300,1.062732,-2.955183
+Setting frequency to 52500 Hz
+52500,1.061211,-2.945755
+Setting frequency to 52700 Hz
+52700,1.060811,-2.933928
+Setting frequency to 52900 Hz
+52900,1.056807,1.701023
+Setting frequency to 53100 Hz
+53100,1.057750,-2.906013
+Setting frequency to 53300 Hz
+53300,1.055613,-2.895425
+Setting frequency to 53500 Hz
+53500,1.057148,1.719215
+Setting frequency to 53700 Hz
+53700,1.055798,-2.874163
+Setting frequency to 53900 Hz
+53900,1.057190,1.731289
+Setting frequency to 54100 Hz
+54100,1.056178,1.736977
+Setting frequency to 54300 Hz
+54300,1.055740,1.741146
+Setting frequency to 54500 Hz
+54500,1.055932,-2.821594
+Setting frequency to 54700 Hz
+54700,1.054277,-2.812991
+Setting frequency to 54900 Hz
+54900,1.052917,1.761795
+Setting frequency to 55100 Hz
+55100,1.054780,1.766897
+Setting frequency to 55300 Hz
+55300,1.050760,-2.774394
+Setting frequency to 55500 Hz
+55500,1.052864,-2.764444
+Setting frequency to 55700 Hz
+55700,1.052969,1.782744
+Setting frequency to 55900 Hz
+55900,1.052306,1.790377
+Setting frequency to 56100 Hz
+56100,1.048918,-2.723766
+Setting frequency to 56300 Hz
+56300,1.049322,-2.715230
+Setting frequency to 56500 Hz
+56500,1.050169,1.806633
+Setting frequency to 56700 Hz
+56700,1.045651,-2.690635
+Setting frequency to 56900 Hz
+56900,1.047543,-2.678928
+Setting frequency to 57100 Hz
+57100,1.048435,-2.667720
+Setting frequency to 57300 Hz
+57300,1.048701,1.831288
+Setting frequency to 57500 Hz
+57500,1.044313,1.835760
+Setting frequency to 57700 Hz
+57700,1.049135,1.843192
+Setting frequency to 57900 Hz
+57900,1.047640,-2.617275
+Setting frequency to 58100 Hz
+58100,1.046504,-2.602469
+Setting frequency to 58300 Hz
+58300,1.045756,1.859352
+Setting frequency to 58500 Hz
+58500,1.045336,1.865415
+Setting frequency to 58700 Hz
+58700,1.044723,1.870814
+Setting frequency to 58900 Hz
+58900,1.045839,1.878183
+Setting frequency to 59100 Hz
+59100,1.040489,1.881438
+Setting frequency to 59300 Hz
+59300,1.042606,1.888910
+Setting frequency to 59500 Hz
+59500,1.041141,-2.519722
+Setting frequency to 59700 Hz
+59700,1.042350,1.900944
+Setting frequency to 59900 Hz
+59900,1.041348,-2.496593
+Setting frequency to 60100 Hz
+60100,1.039381,-2.478858
+Setting frequency to 60300 Hz
+60300,1.040677,1.919526
+Setting frequency to 60500 Hz
+60500,1.040136,-2.454649
+Setting frequency to 60700 Hz
+60700,1.035410,1.930750
+Setting frequency to 60900 Hz
+60900,1.039622,1.937435
+Setting frequency to 61100 Hz
+61100,1.037128,-2.417499
+Setting frequency to 61300 Hz
+61300,1.036966,1.949916
+Setting frequency to 61500 Hz
+61500,1.036151,1.956294
+Setting frequency to 61700 Hz
+61700,1.035420,1.959168
+Setting frequency to 61900 Hz
+61900,1.034501,-2.370885
+Setting frequency to 62100 Hz
+62100,1.035794,1.970810
+Setting frequency to 62300 Hz
+62300,1.035639,1.981034
+Setting frequency to 62500 Hz
+62500,1.036608,1.984949
+Setting frequency to 62700 Hz
+62700,1.035300,1.991050
+Setting frequency to 62900 Hz
+62900,1.031486,1.995716
+Setting frequency to 63100 Hz
+63100,1.033711,2.004880
+Setting frequency to 63300 Hz
+63300,1.035048,-2.286958
+Setting frequency to 63500 Hz
+63500,1.031988,-2.273976
+Setting frequency to 63700 Hz
+63700,1.032741,2.021889
+Setting frequency to 63900 Hz
+63900,1.034509,2.025391
+Setting frequency to 64100 Hz
+64100,1.034274,2.033776
+Setting frequency to 64300 Hz
+64300,1.027378,2.038438
+Setting frequency to 64500 Hz
+64500,1.031165,2.045298
+Setting frequency to 64700 Hz
+64700,1.032441,2.052763
+Setting frequency to 64900 Hz
+64900,1.029825,-2.187994
+Setting frequency to 65100 Hz
+65100,1.031980,2.065148
+Setting frequency to 65300 Hz
+65300,1.028716,-2.162338
+Setting frequency to 65500 Hz
+65500,1.027385,2.076680
+Setting frequency to 65700 Hz
+65700,1.028651,2.079482
+Setting frequency to 65900 Hz
+65900,1.027718,2.089529
+Setting frequency to 66100 Hz
+66100,1.029555,2.093228
+Setting frequency to 66300 Hz
+66300,1.026362,2.099938
+Setting frequency to 66500 Hz
+66500,1.027951,-2.084441
+Setting frequency to 66700 Hz
+66700,1.026534,2.115525
+Setting frequency to 66900 Hz
+66900,1.027730,2.117703
+Setting frequency to 67100 Hz
+67100,1.023392,2.124774
+Setting frequency to 67300 Hz
+67300,1.025474,2.128946
+Setting frequency to 67500 Hz
+67500,1.026255,-2.022767
+Setting frequency to 67700 Hz
+67700,1.025523,2.143270
+Setting frequency to 67900 Hz
+67900,1.022041,2.152155
+Setting frequency to 68100 Hz
+68100,1.025211,2.156435
+Setting frequency to 68300 Hz
+68300,1.019607,2.159967
+Setting frequency to 68500 Hz
+68500,1.021955,-1.962677
+Setting frequency to 68700 Hz
+68700,1.021986,-1.952809
+Setting frequency to 68900 Hz
+68900,1.024399,-1.935390
+Setting frequency to 69100 Hz
+69100,1.022440,2.187891
+Setting frequency to 69300 Hz
+69300,1.020945,2.193211
+Setting frequency to 69500 Hz
+69500,1.019229,2.196004
+Setting frequency to 69700 Hz
+69700,1.019415,-1.891349
+Setting frequency to 69900 Hz
+69900,1.020611,2.211081
+Setting frequency to 70100 Hz
+70100,1.018035,2.214625
+Setting frequency to 70300 Hz
+70300,1.019336,2.224308
+Setting frequency to 70500 Hz
+70500,1.021308,2.230683
+Setting frequency to 70700 Hz
+70700,1.019045,2.234094
+Setting frequency to 70900 Hz
+70900,1.018380,2.243789
+Setting frequency to 71100 Hz
+71100,1.019082,2.247201
+Setting frequency to 71300 Hz
+71300,1.016568,2.252095
+Setting frequency to 71500 Hz
+71500,1.015906,2.263143
+Setting frequency to 71700 Hz
+71700,1.018430,-1.761775
+Setting frequency to 71900 Hz
+71900,1.017241,-1.755252
+Setting frequency to 72100 Hz
+72100,1.012972,2.278036
+Setting frequency to 72300 Hz
+72300,1.018166,2.283406
+Setting frequency to 72500 Hz
+72500,1.012289,2.291895
+Setting frequency to 72700 Hz
+72700,1.012838,-1.699796
+Setting frequency to 72900 Hz
+72900,1.014843,2.305947
+Setting frequency to 73100 Hz
+73100,1.015579,2.312289
+Setting frequency to 73300 Hz
+73300,1.015630,2.316009
+Setting frequency to 73500 Hz
+73500,1.013644,2.323420
+Setting frequency to 73700 Hz
+73700,1.012937,-1.640594
+Setting frequency to 73900 Hz
+73900,1.009755,2.335984
+Setting frequency to 74100 Hz
+74100,1.012698,2.342079
+Setting frequency to 74300 Hz
+74300,1.014143,2.345687
+Setting frequency to 74500 Hz
+74500,1.011271,2.354556
+Setting frequency to 74700 Hz
+74700,1.011326,2.360686
+Setting frequency to 74900 Hz
+74900,1.013274,2.364272
+Setting frequency to 75100 Hz
+75100,1.012890,-1.550765
+Setting frequency to 75300 Hz
+75300,1.010598,2.380639
+Setting frequency to 75500 Hz
+75500,1.011031,2.383113
+Setting frequency to 75700 Hz
+75700,1.007558,2.389339
+Setting frequency to 75900 Hz
+75900,1.013189,2.396946
+Setting frequency to 76100 Hz
+76100,1.011030,2.402128
+Setting frequency to 76300 Hz
+76300,1.005612,2.410482
+Setting frequency to 76500 Hz
+76500,1.007524,-1.459749
+Setting frequency to 76700 Hz
+76700,1.010404,2.419464
+Setting frequency to 76900 Hz
+76900,1.009698,2.429606
+Setting frequency to 77100 Hz
+77100,1.007413,2.435018
+Setting frequency to 77300 Hz
+77300,1.006484,2.437038
+Setting frequency to 77500 Hz
+77500,1.008277,2.449054
+Setting frequency to 77700 Hz
+77700,1.006669,2.454336
+Setting frequency to 77900 Hz
+77900,1.009740,-1.377435
+Setting frequency to 78100 Hz
+78100,1.006106,2.466786
+Setting frequency to 78300 Hz
+78300,1.007852,-1.348695
+Setting frequency to 78500 Hz
+78500,1.003396,2.476130
+Setting frequency to 78700 Hz
+78700,1.005935,-1.326337
+Setting frequency to 78900 Hz
+78900,1.006562,-1.313107
+Setting frequency to 79100 Hz
+79100,1.003379,2.497593
+Setting frequency to 79300 Hz
+79300,1.003804,2.501942
+Setting frequency to 79500 Hz
+79500,1.003283,-1.274965
+Setting frequency to 79700 Hz
+79700,1.004767,2.515238
+Setting frequency to 79900 Hz
+79900,1.003021,2.524416
+Setting frequency to 80100 Hz
+80100,1.002312,2.531246
+Setting frequency to 80300 Hz
+80300,1.002549,-1.224618
+Setting frequency to 80500 Hz
+80500,1.003998,2.543242
+Setting frequency to 80700 Hz
+80700,1.005260,2.546867
+Setting frequency to 80900 Hz
+80900,1.004710,-1.189373
+Setting frequency to 81100 Hz
+81100,1.002854,2.559789
+Setting frequency to 81300 Hz
+81300,1.004041,2.564403
+Setting frequency to 81500 Hz
+81500,1.005676,-1.151643
+Setting frequency to 81700 Hz
+81700,1.003021,2.575757
+Setting frequency to 81900 Hz
+81900,1.001832,2.585595
+Setting frequency to 82100 Hz
+82100,1.004806,2.593262
+Setting frequency to 82300 Hz
+82300,0.999746,-1.099163
+Setting frequency to 82500 Hz
+82500,1.002188,-1.088624
+Setting frequency to 82700 Hz
+82700,1.000546,2.608286
+Setting frequency to 82900 Hz
+82900,0.998551,2.615658
+Setting frequency to 83100 Hz
+83100,0.998752,-1.048147
+Setting frequency to 83300 Hz
+83300,1.000828,2.627753
+Setting frequency to 83500 Hz
+83500,1.001148,-1.024145
+Setting frequency to 83700 Hz
+83700,1.000710,2.641019
+Setting frequency to 83900 Hz
+83900,0.998041,2.651023
+Setting frequency to 84100 Hz
+84100,0.996793,2.656698
+Setting frequency to 84300 Hz
+84300,0.998816,2.658068
+Setting frequency to 84500 Hz
+84500,0.999281,2.665213
+Setting frequency to 84700 Hz
+84700,0.999309,2.673172
+Setting frequency to 84900 Hz
+84900,1.000172,2.679692
+Setting frequency to 85100 Hz
+85100,0.994002,2.688430
+Setting frequency to 85300 Hz
+85300,0.994749,-0.913748
+Setting frequency to 85500 Hz
+85500,0.998845,-0.901571
+Setting frequency to 85700 Hz
+85700,1.000166,-0.887798
+Setting frequency to 85900 Hz
+85900,0.996795,2.712719
+Setting frequency to 86100 Hz
+86100,0.994129,-0.861536
+Setting frequency to 86300 Hz
+86300,0.996894,2.725054
+Setting frequency to 86500 Hz
+86500,0.996473,2.731346
+Setting frequency to 86700 Hz
+86700,0.998404,2.734547
+Setting frequency to 86900 Hz
+86900,0.998350,2.746027
+Setting frequency to 87100 Hz
+87100,0.994947,-0.795748
+Setting frequency to 87300 Hz
+87300,0.995206,2.757501
+Setting frequency to 87500 Hz
+87500,0.994705,-0.771622
+Setting frequency to 87700 Hz
+87700,0.994504,-0.760701
+Setting frequency to 87900 Hz
+87900,0.994898,2.773653
+Setting frequency to 88100 Hz
+88100,0.991210,2.782708
+Setting frequency to 88300 Hz
+88300,0.995584,-0.723285
+Setting frequency to 88500 Hz
+88500,0.991826,2.792541
+Setting frequency to 88700 Hz
+88700,0.993807,2.800299
+Setting frequency to 88900 Hz
+88900,0.994043,2.804882
+Setting frequency to 89100 Hz
+89100,0.994379,2.807914
+Setting frequency to 89300 Hz
+89300,0.997964,2.812919
+Setting frequency to 89500 Hz
+89500,0.988305,2.824183
+Setting frequency to 89700 Hz
+89700,0.991516,2.828311
+Setting frequency to 89900 Hz
+89900,0.992991,-0.621493
+Setting frequency to 90100 Hz
+90100,0.991651,-0.611237
+Setting frequency to 90300 Hz
+90300,0.992957,2.851804
+Setting frequency to 90500 Hz
+90500,0.993067,2.859533
+Setting frequency to 90700 Hz
+90700,0.994998,2.862913
+Setting frequency to 90900 Hz
+90900,0.990540,-0.559623
+Setting frequency to 91100 Hz
+91100,0.989759,2.874474
+Setting frequency to 91300 Hz
+91300,0.990345,2.885363
+Setting frequency to 91500 Hz
+91500,0.993748,2.890253
+Setting frequency to 91700 Hz
+91700,0.990982,2.893520
+Setting frequency to 91900 Hz
+91900,0.988954,2.901370
+Setting frequency to 92100 Hz
+92100,0.989724,-0.480719
+Setting frequency to 92300 Hz
+92300,0.988884,-0.467810
+Setting frequency to 92500 Hz
+92500,0.988007,2.922055
+Setting frequency to 92700 Hz
+92700,0.992392,2.929346
+Setting frequency to 92900 Hz
+92900,0.989359,-0.433158
+Setting frequency to 93100 Hz
+93100,0.987256,2.940640
+Setting frequency to 93300 Hz
+93300,0.988569,2.944583
+Setting frequency to 93500 Hz
+93500,0.990879,2.953894
+Setting frequency to 93700 Hz
+93700,0.987505,2.962379
+Setting frequency to 93900 Hz
+93900,0.989968,2.969428
+Setting frequency to 94100 Hz
+94100,0.988346,2.968425
+Setting frequency to 94300 Hz
+94300,0.987069,-0.342911
+Setting frequency to 94500 Hz
+94500,0.992066,-0.330754
+Setting frequency to 94700 Hz
+94700,0.986220,2.990675
+Setting frequency to 94900 Hz
+94900,0.988200,2.999465
+Setting frequency to 95100 Hz
+95100,0.990468,3.005080
+Setting frequency to 95300 Hz
+95300,0.991165,3.012288
+Setting frequency to 95500 Hz
+95500,0.989522,-0.265836
+Setting frequency to 95700 Hz
+95700,0.989494,-0.253312
+Setting frequency to 95900 Hz
+95900,0.990139,3.028386
+Setting frequency to 96100 Hz
+96100,0.989813,-0.227728
+Setting frequency to 96300 Hz
+96300,0.989887,3.045342
+Setting frequency to 96500 Hz
+96500,0.987709,3.052612
+Setting frequency to 96700 Hz
+96700,0.985053,3.056790
+Setting frequency to 96900 Hz
+96900,0.988353,3.065121
+Setting frequency to 97100 Hz
+97100,0.988491,-0.160884
+Setting frequency to 97300 Hz
+97300,0.984424,-0.151002
+Setting frequency to 97500 Hz
+97500,0.988442,-0.141810
+Setting frequency to 97700 Hz
+97700,0.988486,3.087723
+Setting frequency to 97900 Hz
+97900,0.988473,3.091455
+Setting frequency to 98100 Hz
+98100,0.983808,-0.101097
+Setting frequency to 98300 Hz
+98300,0.986006,3.104280
+Setting frequency to 98500 Hz
+98500,0.984320,3.114347
+Setting frequency to 98700 Hz
+98700,0.988469,-0.064283
+Setting frequency to 98900 Hz
+98900,0.988876,3.124089
+Setting frequency to 99100 Hz
+99100,0.986073,-0.036632
+Setting frequency to 99300 Hz
+99300,0.987241,-0.026532
+Setting frequency to 99500 Hz
+99500,0.986375,-0.012012
+Setting frequency to 99700 Hz
+99700,0.984726,-3.132914
+Setting frequency to 99900 Hz
+99900,0.987567,-3.123350
+
+Magnitude-only IIR fit:
+Used points = 450
+LP error = 178.400322372208
+HP error = 2.912980690487
+BP error = 0.822146729021
+BS error = 130.817863911823
+Best type = 2, K = 1.141276776914, f0 = 32300.000000 Hz, Q = 0.290859814519
+Solution N = [N0, N1, N2, N3, N4]^T:
+N0 = 0.00000000000000000000
+N1 = 0.00001933413980181977
+N2 = 0.00000000000000000000
+N3 = 0.00001694079840483503
+N4 = 0.00000000002427924594
+
+Analog filter coefficients:
+B = [0.000000000000, 0.000019334140, 0.000000000000]
+A = [0.000000000024, 0.000016940798, 1.000000000000]
+
+Digital filter coefficients (float):
+num = [0.663206995481, 0.000000000000, -0.663206995481]
+den = [1.000000000000, -0.494756825214, -0.162219382531]
+
+Final quantized coefficients (32-bit Q31):
+b0 = 23334521700913, b1 = 0, b2 = -23334521700913
+a1 = -17407708231829, a2 = -5707587114981
+
+Filter Type Analysis:
+|H(0)| = 0.000000
+|H(inf)| = 0.000000
+Filter Type: BAND_PASS_FILTER
+Learn finished, calculating IIR coefficients...
