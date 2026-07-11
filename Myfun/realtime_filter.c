@@ -5,7 +5,7 @@
 #include "dac.h"
 #include "modify_adc.h"
 #include "tim.h"
-
+#include "usart.h"
 
 #define RT_BUFFER_LEN ADC_LEN
 #define RT_HALF_BUFFER_LEN (ADC_LEN / 2U)
@@ -28,6 +28,47 @@ static float rt_x1 = 0.0f;
 static float rt_x2 = 0.0f;
 static float rt_y1 = 0.0f;
 static float rt_y2 = 0.0f;
+
+static void RealtimeFilter_CleanDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_CleanDCache_by_Addr((uint32_t *)addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_InvalidateDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_InvalidateDCache_by_Addr(addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_CleanInvalidateDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_CleanInvalidateDCache_by_Addr((uint32_t *)addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_CleanDacRange(uint32_t offset, uint32_t count)
+{
+    RealtimeFilter_CleanDCache(&rt_dac_buf[offset], count * sizeof(rt_dac_buf[0]));
+}
+
+static void RealtimeFilter_InvalidateAdcRange(uint32_t offset, uint32_t count)
+{
+    RealtimeFilter_InvalidateDCache(&rt_adc_buf[offset], count * sizeof(rt_adc_buf[0]));
+}
+
 
 static void RealtimeFilter_ResetState(void)
 {
