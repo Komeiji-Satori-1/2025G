@@ -4,6 +4,7 @@
 #include "dac.h"
 #include "tim.h"
 #include "calculate.h"
+#include "modify_adc.h"
 
 #define RT_BUFFER_LEN              ADC_LEN
 #define RT_HALF_BUFFER_LEN         (ADC_LEN / 2U)
@@ -157,14 +158,6 @@ uint8_t RealtimeFilter_Start(void)
         printf("Realtime filter warning: failed to stop DAC1 DMA.\r\n");
     }
 
-    if (RealtimeFilter_ApplyAdc1Mode(1U) != HAL_OK)
-    {
-        printf("Realtime filter start failed: ADC1 reconfiguration error.\r\n");
-        (void)RealtimeFilter_ApplyAdc1Mode(0U);
-        RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
-        return 0U;
-    }
-
     RealtimeFilter_LoadCoefficients();
     RealtimeFilter_ResetState();
     RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
@@ -178,11 +171,10 @@ uint8_t RealtimeFilter_Start(void)
         return 0U;
     }
 
-    if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)rt_adc_buf, RT_BUFFER_LEN) != HAL_OK)
+    if (App_ADC1_Reconfig_ForFilter(rt_adc_buf, RT_BUFFER_LEN) == 0U)
     {
         printf("Realtime filter start failed: ADC1 DMA start error.\r\n");
         (void)HAL_DAC_Stop_DMA(&hdac1, DAC_CHANNEL_1);
-        (void)HAL_ADC_Stop_DMA(&hadc1);
         (void)RealtimeFilter_ApplyAdc1Mode(0U);
         RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
         return 0U;

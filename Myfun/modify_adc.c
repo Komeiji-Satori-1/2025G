@@ -27,6 +27,7 @@ void App_ADC_ResetFlags(void)
     g_adc_mode_ctrl.adc1_done = 0U;
     g_adc_mode_ctrl.adc2_done = 0U;
     g_adc_mode_ctrl.adc_flag = 0U;
+    g_adc_mode_ctrl.iir_process_flags = 0U;
 }
 
 /* 进入滤波模式：ADC1 改成 circular，只采 PA0 */

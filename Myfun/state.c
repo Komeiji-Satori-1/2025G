@@ -2,6 +2,7 @@
 #include "calculate.h"
 #include "command.h"
 #include "iir.h"
+#include "realtime_filter.h"
 
 #define HMI_CMD_A1 0xA1
 #define HMI_CMD_A2 0xA2
@@ -35,6 +36,31 @@ static uint8_t vout_ready = 0;
 static uint8_t freq_ready = 0;
 
 static uint8_t need_calculate = 0;
+
+static void State_ProcessRealtimeFilter(void)
+{
+    uint8_t flags;
+
+    if (RealtimeFilter_IsRunning() == 0U)
+    {
+        return;
+    }
+
+    __disable_irq();
+    flags = g_adc_mode_ctrl.iir_process_flags;
+    g_adc_mode_ctrl.iir_process_flags = 0U;
+    __enable_irq();
+
+    if ((flags & 0x01U) != 0U)
+    {
+        RealtimeFilter_ProcessHalf(0U);
+    }
+
+    if ((flags & 0x02U) != 0U)
+    {
+        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
+    }
+}
 
 static void State_HandleHmiData(uint8_t head, uint32_t value)
 {
@@ -86,6 +112,8 @@ void State_Init(void)
 
 void State_Proc(void)
 {
+    State_ProcessRealtimeFilter();
+
     switch (state)
     {
     case STATE_IDLE:
@@ -120,6 +148,9 @@ void State_Proc(void)
         if (hmi_a5_update_flag)
         {
             hmi_a5_update_flag = 0;
+            RealtimeFilter_Stop();
+            App_ADC_SetMode(ADC_MODE_LEARN);
+            App_ADC_ResetFlags();
             calculate_learn_start();
             state = STATE_CALC_LEARN;
         }
@@ -147,27 +178,21 @@ void State_Proc(void)
         break;
 
     case STATE_CALC_LEARN:
-        if (App_ADC_Restore_ForLearn(ADC1_IN, ADC2_OUT, ADC_LEN) != 0U)
+        need_calculate = 0;
+
+        calculate_learn_proc();
+
+        if (get_learn_done() == 1)
         {
-            need_calculate = 0;
-
-            calculate_learn_proc();
-
-            if (get_learn_done() == 1)
-            {
-                printf("Learn finished, calculating IIR coefficients...\n");
-                state = STATE_CHECK_HMI;
-            }
+            printf("Learn finished, calculating IIR coefficients...\n");
+            state = STATE_CHECK_HMI;
         }
         break;
 
     case STATE_CALC_IIR:
-        if (App_ADC1_Reconfig_ForFilter(iir_adc_buf, IIR_DMA_SAMPLES) != 0U)
-        {
-            need_calculate = 0;
-            // 构建iir，待补充
-            state = STATE_CHECK_HMI;
-        }
+        need_calculate = 0;
+        (void)RealtimeFilter_Start();
+        state = STATE_CHECK_HMI;
         break;
 
     default:

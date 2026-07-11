@@ -1,9 +1,9 @@
 #include "calculate.h"
 #include "AD9833.h"
 #include "iir.h"
+#include "modify_adc.h"
 
 extern void Start_ADC_Capture(void);
-extern volatile uint8_t ADC_Flag;
 extern uint16_t ADC1_IN[ADC_LEN];
 extern uint16_t ADC2_OUT[ADC_LEN];
 #define VIN_AMP_TABLE_SIZE (sizeof(vin_amp_table) / sizeof(vin_amp_table[0]))
@@ -438,8 +438,10 @@ void calculate_learn_proc(void)
         break;
 
     case LEARN_WAIT_ADC:
-        if (ADC_Flag)
+        if (g_adc_mode_ctrl.adc_flag)
+        {
             learn.state = LEARN_PROCESS_FFT;
+        }
         break;
 
     case LEARN_PROCESS_FFT:

@@ -76,6 +76,7 @@ void Start_ADC_Capture(void)
     HAL_ADC_Stop_DMA(&hadc1);
     HAL_ADC_Stop_DMA(&hadc2);
 
+    App_ADC_SetMode(ADC_MODE_LEARN);
     g_adc_mode_ctrl.adc1_done = 0;
     g_adc_mode_ctrl.adc2_done = 0;
     g_adc_mode_ctrl.adc_flag = 0;
