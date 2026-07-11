@@ -5,8 +5,6 @@
 #include "tim.h"
 #include "calculate.h"
 
-#include <string.h>
-
 #define RT_BUFFER_LEN              ADC_LEN
 #define RT_HALF_BUFFER_LEN         (ADC_LEN / 2U)
 #define RT_ADC_MID_CODE            32768.0f
@@ -124,6 +122,13 @@ uint8_t RealtimeFilter_IsRunning(void)
     return realtime_running;
 }
 
+void RealtimeFilter_Init(void)
+{
+    realtime_running = 0U;
+    RealtimeFilter_ResetState();
+    RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
+}
+
 uint8_t RealtimeFilter_Start(void)
 {
     if (!calculate_iir_coeff_ready())
@@ -184,10 +189,12 @@ uint8_t RealtimeFilter_Start(void)
     }
 
     __HAL_TIM_SET_COUNTER(&htim8, 0U);
+    realtime_running = 1U;
 
     if (HAL_TIM_Base_Start(&htim8) != HAL_OK)
     {
         printf("Realtime filter start failed: TIM8 start error.\r\n");
+        realtime_running = 0U;
         (void)HAL_ADC_Stop_DMA(&hadc1);
         (void)HAL_DAC_Stop_DMA(&hdac1, DAC_CHANNEL_1);
         (void)RealtimeFilter_ApplyAdc1Mode(0U);
@@ -195,7 +202,6 @@ uint8_t RealtimeFilter_Start(void)
         return 0U;
     }
 
-    realtime_running = 1U;
     printf("Realtime filter started.\r\n");
     return 1U;
 }

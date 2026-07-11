@@ -134,6 +134,7 @@ int main(void)
 	
   My_Usart_Init();
   AD9833_Init_GPIO();
+  RealtimeFilter_Init();
   State_Init();
 //AD9833_WaveSeting(1000,0,SIN_WAVE,0 );
 //AD9833_AmpSet(30);

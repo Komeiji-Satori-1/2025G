@@ -7,6 +7,7 @@ extern "C" {
 
 #include <stdint.h>
 
+void RealtimeFilter_Init(void);
 uint8_t RealtimeFilter_Start(void);
 void RealtimeFilter_Stop(void);
 uint8_t RealtimeFilter_IsRunning(void);
