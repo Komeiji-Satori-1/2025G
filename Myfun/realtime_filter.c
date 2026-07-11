@@ -5,6 +5,7 @@
 #include "dac.h"
 #include "modify_adc.h"
 #include "tim.h"
+#include "usart.h"
 
 
 #define RT_BUFFER_LEN ADC_LEN
@@ -28,6 +29,46 @@ static float rt_x1 = 0.0f;
 static float rt_x2 = 0.0f;
 static float rt_y1 = 0.0f;
 static float rt_y2 = 0.0f;
+
+static void RealtimeFilter_CleanDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_CleanDCache_by_Addr((uint32_t *)addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_InvalidateDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_InvalidateDCache_by_Addr(addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_CleanInvalidateDCache(void *addr, uint32_t size)
+{
+#if (__DCACHE_PRESENT == 1U)
+    SCB_CleanInvalidateDCache_by_Addr((uint32_t *)addr, (int32_t)size);
+#else
+    (void)addr;
+    (void)size;
+#endif
+}
+
+static void RealtimeFilter_CleanDacRange(uint32_t offset, uint32_t count)
+{
+    RealtimeFilter_CleanDCache(&rt_dac_buf[offset], count * sizeof(rt_dac_buf[0]));
+}
+
+static void RealtimeFilter_InvalidateAdcRange(uint32_t offset, uint32_t count)
+{
+    RealtimeFilter_InvalidateDCache(&rt_adc_buf[offset], count * sizeof(rt_adc_buf[0]));
+}
 
 static void RealtimeFilter_ResetState(void)
 {
@@ -130,6 +171,12 @@ void RealtimeFilter_Init(void)
     realtime_running = 0U;
     RealtimeFilter_ResetState();
     RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
+    RealtimeFilter_CleanDacRange(0U, RT_BUFFER_LEN);
+}
+
+uint32_t RealtimeFilter_GetOverrunCount(void)
+{
+    return g_adc_mode_ctrl.iir_overrun_count;
 }
 
 uint8_t RealtimeFilter_Start(void)
@@ -162,7 +209,11 @@ uint8_t RealtimeFilter_Start(void)
 
     RealtimeFilter_LoadCoefficients();
     RealtimeFilter_ResetState();
+    g_adc_mode_ctrl.iir_process_flags = 0U;
+    g_adc_mode_ctrl.iir_overrun_count = 0U;
     RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
+    RealtimeFilter_CleanDacRange(0U, RT_BUFFER_LEN);
+    RealtimeFilter_CleanInvalidateDCache(rt_adc_buf, sizeof(rt_adc_buf));
 
     if (HAL_DAC_Start_DMA(&hdac1, DAC_CHANNEL_1, (uint32_t *)rt_dac_buf, RT_BUFFER_LEN, DAC_ALIGN_12B_R) != HAL_OK)
     {
@@ -184,9 +235,11 @@ uint8_t RealtimeFilter_Start(void)
 
     __HAL_TIM_SET_COUNTER(&htim8, 0U);
     realtime_running = 1U;
+    App_Printf_SetEnabled(0U);
 
     if (HAL_TIM_Base_Start(&htim8) != HAL_OK)
     {
+        App_Printf_SetEnabled(1U);
         printf("Realtime filter start failed: TIM8 start error.\r\n");
         realtime_running = 0U;
         (void)HAL_ADC_Stop_DMA(&hadc1);
@@ -196,7 +249,6 @@ uint8_t RealtimeFilter_Start(void)
         return 0U;
     }
 
-    printf("Realtime filter started.\r\n");
     return 1U;
 }
 
@@ -228,8 +280,10 @@ void RealtimeFilter_Stop(void)
     }
 
     RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
+    RealtimeFilter_CleanDacRange(0U, RT_BUFFER_LEN);
     RealtimeFilter_ResetState();
     realtime_running = 0U;
+    App_Printf_SetEnabled(1U);
     printf("Realtime filter stopped.\r\n");
 }
 
@@ -253,8 +307,12 @@ void RealtimeFilter_ProcessHalf(uint32_t offset)
         return;
     }
 
+    RealtimeFilter_InvalidateAdcRange(offset, RT_HALF_BUFFER_LEN);
+
     for (uint32_t i = offset; i < end; i++)
     {
         RealtimeFilter_ProcessSample(i);
     }
+
+    RealtimeFilter_CleanDacRange(offset, RT_HALF_BUFFER_LEN);
 }

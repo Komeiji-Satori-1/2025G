@@ -21,6 +21,17 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+static volatile uint8_t app_printf_enabled = 1U;
+
+void App_Printf_SetEnabled(uint8_t enable)
+{
+  app_printf_enabled = (enable != 0U) ? 1U : 0U;
+}
+
+uint8_t App_Printf_IsEnabled(void)
+{
+  return app_printf_enabled;
+}
 
 /* USER CODE END 0 */
 
@@ -238,6 +249,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 int fputc(int ch,FILE *f){
+	if (app_printf_enabled == 0U)
+	{
+		return ch;
+	}
 	HAL_UART_Transmit(&huart3,(uint8_t*)&ch,1,0xffff);
 	return ch;
 }

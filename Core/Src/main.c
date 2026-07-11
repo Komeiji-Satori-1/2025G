@@ -80,6 +80,8 @@ void Start_ADC_Capture(void)
     g_adc_mode_ctrl.adc1_done = 0;
     g_adc_mode_ctrl.adc2_done = 0;
     g_adc_mode_ctrl.adc_flag = 0;
+    g_adc_mode_ctrl.iir_process_flags = 0;
+    g_adc_mode_ctrl.iir_overrun_count = 0;
 
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
@@ -262,6 +264,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
+          if ((g_adc_mode_ctrl.iir_process_flags & 0x02U) != 0U)
+          {
+              g_adc_mode_ctrl.iir_overrun_count++;
+          }
           g_adc_mode_ctrl.iir_process_flags |= 0x02U;   // 后半缓冲
         }
     }
@@ -273,6 +279,10 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
+          if ((g_adc_mode_ctrl.iir_process_flags & 0x01U) != 0U)
+          {
+              g_adc_mode_ctrl.iir_overrun_count++;
+          }
           g_adc_mode_ctrl.iir_process_flags |= 0x01U;   // 前半缓冲
         }
     }
