@@ -38,6 +38,16 @@ static uint8_t freq_ready = 0;
 
 static uint8_t need_calculate = 0;
 
+static void State_StartLearn(void)
+{
+    RealtimeFilter_Stop();
+    App_ADC_SetMode(ADC_MODE_LEARN);
+    App_ADC_ResetFlags();
+    calculate_learn_start();
+    need_calculate = 0;
+    state = STATE_CALC_LEARN;
+}
+
 static void State_ProcessRealtimeFilter(void)
 {
     uint8_t flags;
@@ -118,6 +128,13 @@ void State_Init(void)
 
 void State_Proc(void)
 {
+    if (hmi_a5_update_flag)
+    {
+        hmi_a5_update_flag = 0;
+        State_StartLearn();
+        return;
+    }
+
     State_ProcessRealtimeFilter();
 
     switch (state)
@@ -149,16 +166,6 @@ void State_Proc(void)
         {
             hmi_a4_update_flag = 0;
             State_HandleHmiData(HMI_CMD_A4, hmi_a4_value);
-        }
-
-        if (hmi_a5_update_flag)
-        {
-            hmi_a5_update_flag = 0;
-            RealtimeFilter_Stop();
-            App_ADC_SetMode(ADC_MODE_LEARN);
-            App_ADC_ResetFlags();
-            calculate_learn_start();
-            state = STATE_CALC_LEARN;
         }
 
         if (hmi_a6_update_flag)
