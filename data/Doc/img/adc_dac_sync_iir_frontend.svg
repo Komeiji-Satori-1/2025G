@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2937"/>
+    </marker>
+    <style>
+      .box { fill:#ffffff; stroke:#1f2937; stroke-width:2; rx:8; }
+      .soft { fill:#eef6ff; stroke:#2563eb; stroke-width:2; rx:8; }
+      .warn { fill:#fff7ed; stroke:#ea580c; stroke-width:2; rx:8; }
+      .mcu { fill:#f0fdf4; stroke:#16a34a; stroke-width:2; rx:8; }
+      .text { font-family: Arial, sans-serif; font-size:20px; fill:#111827; }
+      .small { font-family: Arial, sans-serif; font-size:16px; fill:#374151; }
+      .line { stroke:#1f2937; stroke-width:2.5; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#6b7280; stroke-width:2; fill:none; stroke-dasharray:8 6; }
+    </style>
+  </defs>
+
+  <rect x="30" y="30" width="1060" height="620" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" rx="12"/>
+  <text x="560" y="72" text-anchor="middle" class="text">STM32H743 ADC-DAC 同步实时 IIR 硬件与数据流</text>
+
+  <rect x="70" y="140" width="150" height="70" class="box"/>
+  <text x="145" y="168" text-anchor="middle" class="text">信号源</text>
+  <text x="145" y="194" text-anchor="middle" class="small">0V 中心, <=2 Vpp</text>
+
+  <rect x="310" y="80" width="180" height="80" class="box"/>
+  <text x="400" y="112" text-anchor="middle" class="text">未知模型电路</text>
+  <text x="400" y="140" text-anchor="middle" class="small">无源 RLC</text>
+
+  <rect x="660" y="80" width="170" height="80" class="box"/>
+  <text x="745" y="112" text-anchor="middle" class="text">示波器 1</text>
+  <text x="745" y="140" text-anchor="middle" class="small">未知模型输出</text>
+
+  <rect x="300" y="250" width="200" height="90" class="soft"/>
+  <text x="400" y="280" text-anchor="middle" class="text">ADC 前端</text>
+  <text x="400" y="306" text-anchor="middle" class="small">高阻缓冲 + 保护</text>
+  <text x="400" y="328" text-anchor="middle" class="small">叠加 1.65V 偏置</text>
+
+  <rect x="565" y="240" width="250" height="240" class="mcu"/>
+  <text x="690" y="272" text-anchor="middle" class="text">STM32H743IIT6</text>
+  <rect x="595" y="300" width="190" height="52" class="box"/>
+  <text x="690" y="333" text-anchor="middle" class="small">ADC1 PA0 / INP16</text>
+  <rect x="595" y="368" width="190" height="52" class="box"/>
+  <text x="690" y="401" text-anchor="middle" class="small">二阶 IIR 实时处理</text>
+  <rect x="595" y="436" width="190" height="52" class="box"/>
+  <text x="690" y="469" text-anchor="middle" class="small">DAC1 PA4 / CH1</text>
+
+  <rect x="875" y="300" width="170" height="80" class="warn"/>
+  <text x="960" y="330" text-anchor="middle" class="text">示波器 2</text>
+  <text x="960" y="356" text-anchor="middle" class="small">AC 耦合比较 Vpp</text>
+
+  <rect x="565" y="525" width="250" height="70" class="soft"/>
+  <text x="690" y="553" text-anchor="middle" class="text">TIM3 TRGO</text>
+  <text x="690" y="578" text-anchor="middle" class="small">200 kHz 同步触发 ADC/DAC</text>
+
+  <path d="M 220 165 L 310 120" class="line"/>
+  <path d="M 490 120 L 660 120" class="line"/>
+  <path d="M 220 185 L 300 295" class="line"/>
+  <path d="M 500 295 L 595 326" class="line"/>
+  <path d="M 690 352 L 690 368" class="line"/>
+  <path d="M 690 420 L 690 436" class="line"/>
+  <path d="M 785 462 L 875 340" class="line"/>
+  <path d="M 690 525 L 690 488" class="dash"/>
+  <path d="M 650 525 L 650 352" class="dash"/>
+
+  <text x="262" y="130" class="small">同一输入</text>
+  <text x="250" y="248" class="small">探究装置输入</text>
+  <text x="832" y="425" class="small">带 1.65V 偏置输出</text>
+  <text x="835" y="448" class="small">示波器 AC 耦合</text>
+</svg>
