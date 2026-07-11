@@ -1,16 +1,17 @@
 #include "realtime_filter.h"
 
 #include "adc.h"
-#include "dac.h"
-#include "tim.h"
 #include "calculate.h"
+#include "dac.h"
 #include "modify_adc.h"
+#include "tim.h"
 
-#define RT_BUFFER_LEN              ADC_LEN
-#define RT_HALF_BUFFER_LEN         (ADC_LEN / 2U)
-#define RT_ADC_MID_CODE            32768.0f
-#define RT_DAC_MID_CODE            2048.0f
-#define RT_ADC_TO_DAC_SCALE        (4095.0f / 65535.0f)
+
+#define RT_BUFFER_LEN ADC_LEN
+#define RT_HALF_BUFFER_LEN (ADC_LEN / 2U)
+#define RT_ADC_MID_CODE 32768.0f
+#define RT_DAC_MID_CODE 2048.0f
+#define RT_ADC_TO_DAC_SCALE ((4095.0f / 65535.0f)*2.0f)
 
 ALIGN_32BYTES(static uint16_t rt_adc_buf[RT_BUFFER_LEN]);
 ALIGN_32BYTES(static uint16_t rt_dac_buf[RT_BUFFER_LEN]);
@@ -117,6 +118,7 @@ static void RealtimeFilter_ProcessSample(uint32_t index)
     dac_value = RT_DAC_MID_CODE + (y * RT_ADC_TO_DAC_SCALE);
     rt_dac_buf[index] = RealtimeFilter_ClampToDac(dac_value);
 }
+
 
 uint8_t RealtimeFilter_IsRunning(void)
 {

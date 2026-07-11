@@ -450,8 +450,8 @@ void calculate_learn_proc(void)
         FFT_SingleFreqResult_t output_dft;
         FFT_TransferResult_t h;
 
-        FFT_SingleFreqDFT_U16(ADC1_IN, ADC_LEN, 200000.0f, (float)learn.freq, &input_dft);
-        FFT_SingleFreqDFT_U16(ADC2_OUT, ADC_LEN, 200000.0f, (float)learn.freq, &output_dft);
+        FFT_SingleFreqDFT_U16(ADC1_IN, ADC_LEN, (float)Fs, (float)learn.freq, &input_dft);
+        FFT_SingleFreqDFT_U16(ADC2_OUT, ADC_LEN, (float)Fs, (float)learn.freq, &output_dft);
 
         FFT_CalcTransfer(&input_dft, &output_dft, &h);
 

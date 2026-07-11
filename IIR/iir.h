@@ -21,7 +21,7 @@ extern "C" {
 #define VECTOR_SIZE     5U
 
 // 这里填 IIR 实际运行采样率，不是扫频步长
-#define Fs              200000.0
+#define Fs              1000000.0
 
 #define EPS             1e-15
 #define Q48_SCALE       35184372088831LL
