@@ -437,7 +437,7 @@ void calculate_learn_proc(void)
         break;
 
     case LEARN_WAIT_ADC:
-        if (ADC_Flag)
+        if (g_adc_mode_ctrl.adc_flag)
             learn.state = LEARN_PROCESS_FFT;
         break;
 

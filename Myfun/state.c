@@ -3,7 +3,6 @@
 #include "command.h"
 #include "iir.h"
 
-
 #define HMI_CMD_A1 0xA1
 #define HMI_CMD_A2 0xA2
 #define HMI_CMD_A3 0xA3
@@ -13,6 +12,9 @@
 
 #define STATE_DEFAULT_VOUT 1.0f
 #define STATE_DEFAULT_FREQ 1000U
+
+extern uint16_t ADC1_IN[ADC_LEN];
+extern uint16_t ADC2_OUT[ADC_LEN];
 
 typedef enum
 {
@@ -118,8 +120,11 @@ void State_Proc(void)
         if (hmi_a5_update_flag)
         {
             hmi_a5_update_flag = 0;
-            calculate_learn_start();
-            state = STATE_CALC_LEARN;
+            if (App_ADC_Restore_ForLearn(ADC1_IN, ADC2_OUT, ADC_LEN) != 0U)
+            {
+                calculate_learn_start();
+                state = STATE_CALC_LEARN;
+            }
         }
 
         if (hmi_a6_update_flag)
@@ -145,6 +150,7 @@ void State_Proc(void)
         break;
 
     case STATE_CALC_LEARN:
+
         need_calculate = 0;
 
         calculate_learn_proc();
@@ -154,12 +160,17 @@ void State_Proc(void)
             printf("Learn finished, calculating IIR coefficients...\n");
             state = STATE_CHECK_HMI;
         }
+
         break;
 
     case STATE_CALC_IIR:
-        need_calculate = 0;
-        // 构建iir，待补充
-        state = STATE_CHECK_HMI;
+        if (App_ADC1_Reconfig_ForFilter(iir_adc_buf, IIR_DMA_SAMPLES) != 0U)
+        {
+            need_calculate = 0;
+
+            // 构建iir，待补充
+            state = STATE_CHECK_HMI;
+        }
         break;
 
     default:

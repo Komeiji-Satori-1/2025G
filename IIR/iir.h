@@ -50,8 +50,7 @@ typedef struct
     int64_t a2;
 } digital_coef;
 
-#define FILTER_MODE_THR_HIGH 0.6
-#define FILTER_MODE_THR_LOW 0.3
+#define FILTER_MODE_THR 0.8
 
 typedef enum
 {

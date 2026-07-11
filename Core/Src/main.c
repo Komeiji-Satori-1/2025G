@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dac.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -32,6 +33,7 @@
 #include "state.h"
 #include "command.h"
 #include "iir.h"
+#include "modify_adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,14 +53,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define TIM3_COUNTER_CLK_HZ 240000000
+#define TIM8_COUNTER_CLK_HZ 240000000
 
 uint16_t ADC1_IN[ADC_LEN ] = {0};
 uint16_t ADC2_OUT[ADC_LEN ] = {0};
 
-volatile uint8_t ADC_Flag = 0;
-static volatile uint8_t adc1_done = 0;
-static volatile uint8_t adc2_done = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,9 +75,9 @@ void Start_ADC_Capture(void)
     HAL_ADC_Stop_DMA(&hadc1);
     HAL_ADC_Stop_DMA(&hadc2);
 
-    adc1_done = 0;
-    adc2_done = 0;
-    ADC_Flag = 0;
+    g_adc_mode_ctrl.adc1_done = 0;
+    g_adc_mode_ctrl.adc2_done = 0;
+    g_adc_mode_ctrl.adc_flag = 0;
 
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
@@ -117,14 +117,15 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
-  MX_TIM3_Init();
   MX_USART1_UART_Init();
   MX_ADC2_Init();
   MX_USART3_UART_Init();
+  MX_DAC1_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
-  HAL_TIM_Base_Start(&htim3);
+  HAL_TIM_Base_Start(&htim8);
 	
   My_Usart_Init();
   AD9833_Init_GPIO();
@@ -135,7 +136,7 @@ int main(void)
 //	AD9833_AmpSet(i);
 //	HAL_Delay(100);
 //}
-/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -237,20 +238,41 @@ void PeriphCommonClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    if (hadc == &hadc1)
+    if (g_adc_mode_ctrl.mode == ADC_MODE_LEARN)
     {
-        HAL_ADC_Stop_DMA(hadc);
-        adc1_done = 1U;
-    }
-    else if (hadc == &hadc2)
-    {
-        HAL_ADC_Stop_DMA(hadc);
-        adc2_done = 1U;
-    }
+        if (hadc == &hadc1)
+        {
+            HAL_ADC_Stop_DMA(hadc);
+            g_adc_mode_ctrl.adc1_done = 1U;
+        }
+        else if (hadc == &hadc2)
+        {
+            HAL_ADC_Stop_DMA(hadc);
+            g_adc_mode_ctrl.adc2_done = 1U;
+        }
 
-    if (adc1_done == 1U && adc2_done == 1U)
+        if (g_adc_mode_ctrl.adc1_done && g_adc_mode_ctrl.adc2_done)
+        {
+            g_adc_mode_ctrl.adc_flag = 1U;
+        }
+    }
+    else if (g_adc_mode_ctrl.mode == ADC_MODE_FILTER)
     {
-        ADC_Flag = 1U;
+        if (hadc == &hadc1)
+        {
+          g_adc_mode_ctrl.iir_process_flags |= 0x02U;   // 后半缓冲
+        }
+    }
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if (g_adc_mode_ctrl.mode == ADC_MODE_FILTER)
+    {
+        if (hadc == &hadc1)
+        {
+          g_adc_mode_ctrl.iir_process_flags |= 0x01U;   // 前半缓冲
+        }
     }
 }
 /* USER CODE END 4 */
