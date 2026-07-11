@@ -65,7 +65,9 @@ extern float freq_table[SAMPLE_NUM];
 
 void coef_calc(const complex *sample_data);
 
-FILTER_TYPE get_filter_type(const analog_coef * coef);
+FILTER_TYPE get_last_fit_filter_type(void);
+
+void show_filter_type(FILTER_TYPE type);
 
 analog_coef matrix_calc(void);
 

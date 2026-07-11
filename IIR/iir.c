@@ -1,4 +1,357 @@
 #include "iir.h"
+
+#define FIT_Q_STEPS        36U
+#define FIT_Q_MIN          0.10
+#define FIT_Q_MAX          50.0
+#define FIT_MAG_FLOOR_RATE 0.05
+#define FIT_MAX_FREQ_RATE  0.45
+#define FIT_PASS_END_MIN_RATIO 0.60
+#define FIT_STOP_END_MAX_RATIO 0.55
+#define FIT_NOTCH_SIDE_MIN_RATIO 0.45
+
+static float64_t fit_freq_data[SAMPLE_NUM];
+static float64_t fit_mag_data[SAMPLE_NUM];
+static uint16_t fit_point_count = 0U;
+static FILTER_TYPE last_fit_filter_type = LOW_PASS_FILTER;
+
+typedef struct
+{
+    FILTER_TYPE type;
+    float64_t error;
+    float64_t K;
+    float64_t w0;
+    float64_t Q;
+} fit_result;
+
+typedef struct
+{
+    float64_t low_ratio;
+    float64_t high_ratio;
+    float64_t trough_ratio;
+    float64_t left_peak_ratio;
+    float64_t right_peak_ratio;
+} fit_shape_feature;
+
+static fit_shape_feature calc_fit_shape_feature(void)
+{
+    fit_shape_feature shape = {0.0, 0.0, 0.0};
+    float64_t peak_mag = 0.0;
+    float64_t trough_mag = 1.0e300;
+    float64_t low_sum = 0.0;
+    float64_t high_sum = 0.0;
+    float64_t left_peak_mag = 0.0;
+    float64_t right_peak_mag = 0.0;
+    uint16_t low_count;
+    uint16_t high_count;
+    uint16_t high_start;
+    uint16_t trough_index = 0U;
+
+    if (fit_point_count == 0U)
+    {
+        return shape;
+    }
+
+    low_count = fit_point_count / 20U;
+    high_count = fit_point_count / 10U;
+
+    if (low_count == 0U)
+    {
+        low_count = 1U;
+    }
+
+    if (high_count == 0U)
+    {
+        high_count = 1U;
+    }
+
+    high_start = fit_point_count - high_count;
+
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        float64_t mag = fit_mag_data[i];
+
+        if (mag > peak_mag)
+        {
+            peak_mag = mag;
+        }
+
+        if (mag < trough_mag)
+        {
+            trough_mag = mag;
+            trough_index = i;
+        }
+
+        if (i < low_count)
+        {
+            low_sum += mag;
+        }
+
+        if (i >= high_start)
+        {
+            high_sum += mag;
+        }
+    }
+
+    if (peak_mag <= EPS)
+    {
+        return shape;
+    }
+
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        float64_t mag = fit_mag_data[i];
+
+        if ((i < trough_index) && (mag > left_peak_mag))
+        {
+            left_peak_mag = mag;
+        }
+
+        if ((i > trough_index) && (mag > right_peak_mag))
+        {
+            right_peak_mag = mag;
+        }
+    }
+
+    shape.low_ratio = (low_sum / (float64_t)low_count) / peak_mag;
+    shape.high_ratio = (high_sum / (float64_t)high_count) / peak_mag;
+    shape.trough_ratio = trough_mag / peak_mag;
+    shape.left_peak_ratio = left_peak_mag / peak_mag;
+    shape.right_peak_ratio = right_peak_mag / peak_mag;
+
+    return shape;
+}
+
+static uint8_t is_fit_shape_allowed(FILTER_TYPE type, const fit_shape_feature *shape)
+{
+    uint8_t low_pass_end;
+    uint8_t high_pass_end;
+    uint8_t low_stop_end;
+    uint8_t high_stop_end;
+    uint8_t has_notch_between_passbands;
+
+    if (shape == NULL)
+    {
+        return 0U;
+    }
+
+    low_pass_end = (shape->low_ratio >= FIT_PASS_END_MIN_RATIO) ? 1U : 0U;
+    high_pass_end = (shape->high_ratio >= FIT_PASS_END_MIN_RATIO) ? 1U : 0U;
+    low_stop_end = (shape->low_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
+    high_stop_end = (shape->high_ratio <= FIT_STOP_END_MAX_RATIO) ? 1U : 0U;
+    has_notch_between_passbands = ((shape->trough_ratio <= FIT_STOP_END_MAX_RATIO) &&
+                                   (shape->left_peak_ratio >= FIT_NOTCH_SIDE_MIN_RATIO) &&
+                                   (shape->right_peak_ratio >= FIT_NOTCH_SIDE_MIN_RATIO))
+                                      ? 1U
+                                      : 0U;
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        return (uint8_t)(low_pass_end && high_stop_end);
+
+    case HIGH_PASS_FILTER:
+        return (uint8_t)(low_stop_end && high_pass_end);
+
+    case BAND_PASS_FILTER:
+        return (uint8_t)(low_stop_end && high_stop_end);
+
+    case BAND_STOP_FILTER:
+        return (uint8_t)((low_pass_end && high_pass_end &&
+                          (shape->trough_ratio <= FIT_STOP_END_MAX_RATIO)) ||
+                         has_notch_between_passbands);
+
+    default:
+        return 0U;
+    }
+}
+
+static float64_t get_model_base_mag(FILTER_TYPE type, float64_t w, float64_t w0, float64_t Q)
+{
+    float64_t x;
+    float64_t x2;
+    float64_t real_den;
+    float64_t imag_den;
+    float64_t den_mag;
+
+    if ((w0 <= EPS) || (Q <= EPS))
+    {
+        return 0.0;
+    }
+
+    x = w / w0;
+    x2 = x * x;
+    real_den = 1.0 - x2;
+    imag_den = x / Q;
+    den_mag = sqrt(real_den * real_den + imag_den * imag_den);
+
+    if (den_mag <= EPS)
+    {
+        return 0.0;
+    }
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        return 1.0 / den_mag;
+
+    case HIGH_PASS_FILTER:
+        return x2 / den_mag;
+
+    case BAND_PASS_FILTER:
+        return fabs(imag_den) / den_mag;
+
+    case BAND_STOP_FILTER:
+        return fabs(real_den) / den_mag;
+
+    default:
+        return 0.0;
+    }
+}
+
+static fit_result fit_one_filter_type(FILTER_TYPE type, const float64_t *q_values, uint16_t q_count)
+{
+    fit_result best;
+    float64_t max_mag = 0.0;
+    float64_t mag_floor;
+
+    best.type = type;
+    best.error = 1.0e300;
+    best.K = 0.0;
+    best.w0 = 0.0;
+    best.Q = 0.0;
+
+    for (uint16_t i = 0U; i < fit_point_count; i++)
+    {
+        if (fit_mag_data[i] > max_mag)
+        {
+            max_mag = fit_mag_data[i];
+        }
+    }
+
+    if (max_mag <= EPS)
+    {
+        return best;
+    }
+
+    mag_floor = max_mag * FIT_MAG_FLOOR_RATE;
+    if (mag_floor < EPS)
+    {
+        mag_floor = EPS;
+    }
+
+    for (uint16_t f0_index = 0U; f0_index < fit_point_count; f0_index++)
+    {
+        float64_t w0 = 2.0 * PI * fit_freq_data[f0_index];
+
+        if (w0 <= EPS)
+        {
+            continue;
+        }
+
+        for (uint16_t q_index = 0U; q_index < q_count; q_index++)
+        {
+            float64_t Q = q_values[q_index];
+            float64_t sum_ym = 0.0;
+            float64_t sum_mm = 0.0;
+            float64_t sum_yy = 0.0;
+            float64_t K;
+            float64_t error;
+
+            for (uint16_t i = 0U; i < fit_point_count; i++)
+            {
+                float64_t y = fit_mag_data[i];
+                float64_t w = 2.0 * PI * fit_freq_data[i];
+                float64_t m = get_model_base_mag(type, w, w0, Q);
+                float64_t weight_base = y;
+                float64_t weight;
+
+                if (weight_base < mag_floor)
+                {
+                    weight_base = mag_floor;
+                }
+
+                weight = 1.0 / (weight_base * weight_base);
+                sum_ym += weight * y * m;
+                sum_mm += weight * m * m;
+                sum_yy += weight * y * y;
+            }
+
+            if (sum_mm <= EPS)
+            {
+                continue;
+            }
+
+            K = sum_ym / sum_mm;
+            if (K <= 0.0)
+            {
+                continue;
+            }
+
+            error = sum_yy - 2.0 * K * sum_ym + K * K * sum_mm;
+            if (error < best.error)
+            {
+                best.error = error;
+                best.K = K;
+                best.w0 = w0;
+                best.Q = Q;
+            }
+        }
+    }
+
+    return best;
+}
+
+static analog_coef build_standard_analog_coef(const fit_result *fit)
+{
+    analog_coef coef = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float64_t w0;
+    float64_t w02;
+    float64_t Q;
+    float64_t K;
+
+    if (fit == NULL)
+    {
+        return coef;
+    }
+
+    w0 = fit->w0;
+    w02 = w0 * w0;
+    Q = fit->Q;
+    K = fit->K;
+
+    if ((w0 <= EPS) || (w02 <= EPS) || (Q <= EPS))
+    {
+        return coef;
+    }
+
+    coef.a1 = 1.0 / (Q * w0);
+    coef.a2 = 1.0 / w02;
+
+    switch (fit->type)
+    {
+    case LOW_PASS_FILTER:
+        coef.b0 = K;
+        break;
+
+    case HIGH_PASS_FILTER:
+        coef.b2 = K / w02;
+        break;
+
+    case BAND_PASS_FILTER:
+        coef.b1 = K / (Q * w0);
+        break;
+
+    case BAND_STOP_FILTER:
+        coef.b0 = K;
+        coef.b2 = K / w02;
+        break;
+
+    default:
+        break;
+    }
+
+    return coef;
+}
 /******************************************************************************
  * 全局变量 - 矩阵方程系数
  *
@@ -55,6 +408,7 @@ void coef_calc(const complex *sample_data)
 
     // 初始化所有系数为0 (lambda0除外)
     lambda0_coef = 500.0; // 频率点数量
+    fit_point_count = 0U;
     lambda2_coef = 0.0;
     lambda4_coef = 0.0;
     s0_coef = 0.0;
@@ -77,6 +431,13 @@ void coef_calc(const complex *sample_data)
         // 计算频率响应的模值平方: |H(jω)|^2 = Re^2 + Im^2
         modul_squre = sample_data[i].r * sample_data[i].r +
                       sample_data[i].i * sample_data[i].i;
+
+        if ((freq_table[i] > 0.0f) && (freq_table[i] <= (float)(Fs * FIT_MAX_FREQ_RATE)) && (modul_squre > (EPS * EPS)))
+        {
+            fit_freq_data[fit_point_count] = (float64_t)freq_table[i];
+            fit_mag_data[fit_point_count] = sqrt(modul_squre);
+            fit_point_count++;
+        }
 
         // 累加 Lambda 系数 (频率项)
         lambda2_coef += w2; // Σ(ω^2)
@@ -137,6 +498,94 @@ void coef_calc(const complex *sample_data)
  ******************************************************************************/
 analog_coef matrix_calc(void)
 {
+#if 1
+    analog_coef analog_coef_temp = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float64_t q_values[FIT_Q_STEPS];
+    fit_result results[4];
+    fit_result best;
+    fit_shape_feature shape;
+    uint8_t shape_ok[4] = {0U, 0U, 0U, 0U};
+    uint8_t has_shape_match = 0U;
+    float64_t q_ratio;
+
+    if (fit_point_count < 5U)
+    {
+        printf("Error: Not enough points for magnitude-only IIR fit!\n");
+        return analog_coef_temp;
+    }
+
+    q_ratio = pow(FIT_Q_MAX / FIT_Q_MIN, 1.0 / (float64_t)(FIT_Q_STEPS - 1U));
+    q_values[0] = FIT_Q_MIN;
+    for (uint16_t i = 1U; i < FIT_Q_STEPS; i++)
+    {
+        q_values[i] = q_values[i - 1U] * q_ratio;
+    }
+
+    results[0] = fit_one_filter_type(LOW_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[1] = fit_one_filter_type(HIGH_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[2] = fit_one_filter_type(BAND_PASS_FILTER, q_values, FIT_Q_STEPS);
+    results[3] = fit_one_filter_type(BAND_STOP_FILTER, q_values, FIT_Q_STEPS);
+
+    shape = calc_fit_shape_feature();
+    for (uint8_t i = 0U; i < 4U; i++)
+    {
+        shape_ok[i] = is_fit_shape_allowed(results[i].type, &shape);
+        if (shape_ok[i] != 0U)
+        {
+            if ((has_shape_match == 0U) || (results[i].error < best.error))
+            {
+                best = results[i];
+            }
+            has_shape_match = 1U;
+        }
+    }
+
+    if (has_shape_match == 0U)
+    {
+        best = results[0];
+        for (uint8_t i = 1U; i < 4U; i++)
+        {
+            if (results[i].error < best.error)
+            {
+                best = results[i];
+            }
+        }
+    }
+
+    last_fit_filter_type = best.type;
+    analog_coef_temp = build_standard_analog_coef(&best);
+
+    printf("\nMagnitude-only IIR fit:\n");
+    printf("Used points = %u\n", fit_point_count);
+    printf("Endpoint shape: low/peak = %.6f, high/peak = %.6f, trough/peak = %.6f, left_peak/peak = %.6f, right_peak/peak = %.6f\n",
+           shape.low_ratio,
+           shape.high_ratio,
+           shape.trough_ratio,
+           shape.left_peak_ratio,
+           shape.right_peak_ratio);
+    printf("LP error = %.12f, shape_ok = %u\n", results[0].error, shape_ok[0]);
+    printf("HP error = %.12f, shape_ok = %u\n", results[1].error, shape_ok[1]);
+    printf("BP error = %.12f, shape_ok = %u\n", results[2].error, shape_ok[2]);
+    printf("BS error = %.12f, shape_ok = %u\n", results[3].error, shape_ok[3]);
+    if (has_shape_match == 0U)
+    {
+        printf("Warning: no filter type passed endpoint shape rules, using minimum error only.\n");
+    }
+    printf("Best type = %d, K = %.12f, f0 = %.6f Hz, Q = %.12f\n",
+           best.type,
+           best.K,
+           best.w0 / (2.0 * PI),
+           best.Q);
+
+    printf("Solution N = [N0, N1, N2, N3, N4]^T:\n");
+    printf("N0 = %.20f\n", analog_coef_temp.b0);
+    printf("N1 = %.20f\n", analog_coef_temp.b1);
+    printf("N2 = %.20f\n", analog_coef_temp.b2);
+    printf("N3 = %.20f\n", analog_coef_temp.a1);
+    printf("N4 = %.20f\n", analog_coef_temp.a2);
+
+    return analog_coef_temp;
+#else
 
     // ==================== 1. 构建系数矩阵 M (5x5) ====================
     // 矩阵按行优先存储
@@ -225,6 +674,7 @@ analog_coef matrix_calc(void)
     analog_coef_temp.a2 = N_data[4]; // 分母二次项系数
 
     return analog_coef_temp;
+#endif
 }
 
 /******************************************************************************
@@ -395,6 +845,44 @@ digital_coef bilinear_transform_quant(const analog_coef *analog_coef_data)
     printf("a1 = %lld, a2 = %lld\n", result.a1, result.a2);
 
     return result;
+}
+
+FILTER_TYPE get_last_fit_filter_type(void)
+{
+    return last_fit_filter_type;
+}
+
+void show_filter_type(FILTER_TYPE type)
+{
+    printf("\nFilter Type From Magnitude Fit:\n");
+
+    switch (type)
+    {
+    case LOW_PASS_FILTER:
+        HMI_send_string("t5", "LOW_PASS_FILTER");
+        printf("Filter Type: LOW_PASS_FILTER\n");
+        break;
+
+    case HIGH_PASS_FILTER:
+        HMI_send_string("t5", "HIGH_PASS_FILTER");
+        printf("Filter Type: HIGH_PASS_FILTER\n");
+        break;
+
+    case BAND_PASS_FILTER:
+        HMI_send_string("t5", "BAND_PASS_FILTER");
+        printf("Filter Type: BAND_PASS_FILTER\n");
+        break;
+
+    case BAND_STOP_FILTER:
+        HMI_send_string("t5", "BAND_STOP_FILTER");
+        printf("Filter Type: BAND_STOP_FILTER\n");
+        break;
+
+    default:
+        HMI_send_string("t5", "UNKNOWN_FILTER");
+        printf("Filter Type: UNKNOWN\n");
+        break;
+    }
 }
 
 /******************************************************************************

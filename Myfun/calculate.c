@@ -396,12 +396,19 @@ void calculate_set_ad9833_amp_by_vin(float vin)
 
 void calculate_learn_start(void)
 {
+    learn_done = 0;
     learn.running = 1;
     learn_done = 0;
     learn.state = LEARN_SET_FREQ;
     learn.freq = LEARN_START_FREQ_HZ;
     learn.index = 0;
+    printf("freq,H_mag,H_phase\r\n");
 }
+uint8_t calculate_learn_is_done(void)
+{
+    return learn_done;
+}
+
 
 void calculate_learn_proc(void)
 {
@@ -458,6 +465,10 @@ void calculate_learn_proc(void)
         freq_table[learn.index] = (float)learn.freq;
         h_table[learn.index].r = h.real;
         h_table[learn.index].i = h.imag;
+        printf("%lu,%.6f,%.6f\r\n",
+               learn.freq,
+               h.mag,
+               h.phase);
         learn.state = LEARN_NEXT_FREQ;
         break;
 
@@ -480,11 +491,12 @@ void calculate_learn_proc(void)
         digital_coef_data = bilinear_transform_quant(&analog_coef_data);
         // 根据扫频得到的 H(jw) 计算 IIR 参数
         // 判断滤波器类型
-        get_filter_type(&analog_coef_data);
+        show_filter_type(get_last_fit_filter_type());
         learn.state = LEARN_DONE;
         break;
 
     case LEARN_DONE:
+        learn_done = 1;
         learn.running = 0;
         learn_done = 1;
         learn.state = LEARN_IDLE;
