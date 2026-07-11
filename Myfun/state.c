@@ -10,6 +10,7 @@
 #define HMI_CMD_A4 0xA4
 #define HMI_CMD_A5 0xA5
 #define HMI_CMD_A6 0xA6
+#define HMI_CMD_A7 0xA7
 
 #define STATE_DEFAULT_VOUT 1.0f
 #define STATE_DEFAULT_FREQ 1000U
@@ -82,6 +83,11 @@ static void State_HandleHmiData(uint8_t head, uint32_t value)
         break;
 
     case HMI_CMD_A4:
+        vout = (float)value / 100.0f;
+        vout_ready = 1;
+        break;
+        
+    case HMI_CMD_A7:
         vout = (float)value / 100.0f;
         vout_ready = 1;
         break;
@@ -159,6 +165,12 @@ void State_Proc(void)
         {
             hmi_a6_update_flag = 0;
             state = STATE_CALC_IIR;
+        }
+
+        if (hmi_a7_update_flag)
+        {
+            hmi_a7_update_flag = 0;
+            State_HandleHmiData(HMI_CMD_A7, hmi_a7_value);
         }
 
         if (need_calculate)

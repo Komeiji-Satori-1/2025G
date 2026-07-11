@@ -7,6 +7,7 @@
 #define HMI_FRAME_HEAD_A4   0xA4
 #define HMI_FRAME_HEAD_A5   0xA5
 #define HMI_FRAME_HEAD_A6   0xA6
+#define HMI_FRAME_HEAD_A7   0xA7
 
 #define HMI_FRAME_LEN       5
 
@@ -27,6 +28,7 @@ volatile uint8_t hmi_a3_update_flag = 0;
 volatile uint8_t hmi_a4_update_flag = 0;
 volatile uint8_t hmi_a5_update_flag = 0;
 volatile uint8_t hmi_a6_update_flag = 0;
+volatile uint8_t hmi_a7_update_flag = 0;
 
 volatile uint32_t hmi_a1_value = 0;
 volatile uint32_t hmi_a2_value = 0;
@@ -34,6 +36,7 @@ volatile uint32_t hmi_a3_value = 0;
 volatile uint32_t hmi_a4_value = 0;
 volatile uint32_t hmi_a5_value = 0;
 volatile uint32_t hmi_a6_value = 0;
+volatile uint32_t hmi_a7_value = 0;
 
 static uint8_t HMI_IsFrameHead(uint8_t data)
 {
@@ -45,6 +48,7 @@ static uint8_t HMI_IsFrameHead(uint8_t data)
         case HMI_FRAME_HEAD_A4:
         case HMI_FRAME_HEAD_A5:
         case HMI_FRAME_HEAD_A6:
+        case HMI_FRAME_HEAD_A7:
             return 1;
 
         default:
