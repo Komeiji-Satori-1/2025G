@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dac.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -51,7 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define TIM3_COUNTER_CLK_HZ 240000000
+#define TIM8_COUNTER_CLK_HZ 240000000
 
 uint16_t ADC1_IN[ADC_LEN ] = {0};
 uint16_t ADC2_OUT[ADC_LEN ] = {0};
@@ -117,14 +118,15 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
-  MX_TIM3_Init();
   MX_USART1_UART_Init();
   MX_ADC2_Init();
   MX_USART3_UART_Init();
+  MX_DAC1_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
-  HAL_TIM_Base_Start(&htim3);
+  HAL_TIM_Base_Start(&htim8);
 	
   My_Usart_Init();
   AD9833_Init_GPIO();
@@ -135,7 +137,7 @@ int main(void)
 //	AD9833_AmpSet(i);
 //	HAL_Delay(100);
 //}
-/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
