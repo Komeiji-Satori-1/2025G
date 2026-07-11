@@ -33,6 +33,7 @@
 #include "state.h"
 #include "command.h"
 #include "iir.h"
+#include "realtime_filter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,6 +74,8 @@ void PeriphCommonClock_Config(void);
 /* USER CODE BEGIN 0 */
 void Start_ADC_Capture(void)
 {
+    RealtimeFilter_Stop();
+
     HAL_ADC_Stop_DMA(&hadc1);
     HAL_ADC_Stop_DMA(&hadc2);
 
@@ -82,6 +85,7 @@ void Start_ADC_Capture(void)
 
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
+    HAL_TIM_Base_Start(&htim8);
 }
 /* USER CODE END 0 */
 
@@ -239,6 +243,12 @@ void PeriphCommonClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
+    if ((hadc == &hadc1) && (RealtimeFilter_IsRunning() != 0U))
+    {
+        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
+        return;
+    }
+
     if (hadc == &hadc1)
     {
         HAL_ADC_Stop_DMA(hadc);
@@ -253,6 +263,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     if (adc1_done == 1U && adc2_done == 1U)
     {
         ADC_Flag = 1U;
+    }
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if ((hadc == &hadc1) && (RealtimeFilter_IsRunning() != 0U))
+    {
+        RealtimeFilter_ProcessHalf(0U);
     }
 }
 /* USER CODE END 4 */

@@ -20,6 +20,7 @@ static complex h_table[LEARN_POINT_NUM];
 static analog_coef analog_coef_data;
 static digital_coef digital_coef_data;
 static uint8_t learn_done = 0;
+static uint8_t iir_coeff_ready = 0;
 
 typedef enum
 {
@@ -398,6 +399,7 @@ void calculate_learn_start(void)
     learn_done = 0;
     learn.running = 1;
     learn_done = 0;
+    iir_coeff_ready = 0;
     learn.state = LEARN_SET_FREQ;
     learn.freq = LEARN_START_FREQ_HZ;
     learn.index = 0;
@@ -477,9 +479,10 @@ void calculate_learn_proc(void)
         coef_calc(h_table);
         analog_coef_data = matrix_calc();
         digital_coef_data = bilinear_transform_quant(&analog_coef_data);
+        iir_coeff_ready = 1;
+        show_filter_type(get_last_fit_filter_type());
         // 根据扫频得到的 H(jw) 计算 IIR 参数
         // 判断滤波器类型
-        show_filter_type(get_last_fit_filter_type());
         learn.state = LEARN_DONE;
         break;
 
@@ -499,4 +502,14 @@ void calculate_learn_proc(void)
 uint8_t get_learn_done(void)
 {
     return learn_done;
+}
+
+const digital_coef *calculate_get_digital_coef(void)
+{
+    return &digital_coef_data;
+}
+
+uint8_t calculate_iir_coeff_ready(void)
+{
+    return iir_coeff_ready;
 }

@@ -40,6 +40,7 @@ extern ADC_HandleTypeDef hadc2;
 
 void MX_ADC1_Init(void);
 void MX_ADC2_Init(void);
+void ADC1_SetDmaCircularMode(uint8_t enable);
 
 /* USER CODE BEGIN Prototypes */
 

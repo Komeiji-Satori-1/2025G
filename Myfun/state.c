@@ -1,6 +1,7 @@
 #include "state.h"
 #include "calculate.h"
 #include "command.h"
+#include "realtime_filter.h"
 #include "iir.h"
 
 
@@ -118,6 +119,7 @@ void State_Proc(void)
         if (hmi_a5_update_flag)
         {
             hmi_a5_update_flag = 0;
+            RealtimeFilter_Stop();
             calculate_learn_start();
             state = STATE_CALC_LEARN;
         }
@@ -158,7 +160,18 @@ void State_Proc(void)
 
     case STATE_CALC_IIR:
         need_calculate = 0;
-        // 构建iir，待补充
+        if (!calculate_iir_coeff_ready())
+        {
+            printf("IIR coefficients are not ready.\r\n");
+            state = STATE_CHECK_HMI;
+            break;
+        }
+
+        if (!RealtimeFilter_Start())
+        {
+            printf("Realtime filter start failed.\r\n");
+        }
+
         state = STATE_CHECK_HMI;
         break;
 
