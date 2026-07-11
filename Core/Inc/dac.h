@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    adc.h
+  * @file    dac.h
   * @brief   This file contains all the function prototypes for
-  *          the adc.c file
+  *          the dac.c file
   ******************************************************************************
   * @attention
   *
@@ -17,8 +17,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __DAC_H__
+#define __DAC_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,16 +31,13 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern ADC_HandleTypeDef hadc1;
-extern ADC_HandleTypeDef hadc2;
+extern DAC_HandleTypeDef hdac1;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_ADC1_Init(void);
-void MX_ADC2_Init(void);
-void ADC1_SetDmaCircularMode(uint8_t enable);
+void MX_DAC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -50,6 +47,6 @@ void ADC1_SetDmaCircularMode(uint8_t enable);
 }
 #endif
 
-#endif /* __ADC_H__ */
+#endif /* __DAC_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

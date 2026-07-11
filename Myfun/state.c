@@ -2,7 +2,7 @@
 #include "calculate.h"
 #include "command.h"
 #include "iir.h"
-
+#include "realtime_filter.h"
 
 #define HMI_CMD_A1 0xA1
 #define HMI_CMD_A2 0xA2
@@ -10,9 +10,13 @@
 #define HMI_CMD_A4 0xA4
 #define HMI_CMD_A5 0xA5
 #define HMI_CMD_A6 0xA6
+#define HMI_CMD_A7 0xA7
 
 #define STATE_DEFAULT_VOUT 1.0f
 #define STATE_DEFAULT_FREQ 1000U
+
+extern uint16_t ADC1_IN[ADC_LEN ];
+extern uint16_t ADC2_OUT[ADC_LEN ] ;
 
 typedef enum
 {
@@ -34,6 +38,31 @@ static uint8_t freq_ready = 0;
 
 static uint8_t need_calculate = 0;
 
+static void State_ProcessRealtimeFilter(void)
+{
+    uint8_t flags;
+
+    if (RealtimeFilter_IsRunning() == 0U)
+    {
+        return;
+    }
+
+    __disable_irq();
+    flags = g_adc_mode_ctrl.iir_process_flags;
+    g_adc_mode_ctrl.iir_process_flags = 0U;
+    __enable_irq();
+
+    if ((flags & 0x01U) != 0U)
+    {
+        RealtimeFilter_ProcessHalf(0U);
+    }
+
+    if ((flags & 0x02U) != 0U)
+    {
+        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
+    }
+}
+
 static void State_HandleHmiData(uint8_t head, uint32_t value)
 {
     switch (head)
@@ -54,6 +83,11 @@ static void State_HandleHmiData(uint8_t head, uint32_t value)
         break;
 
     case HMI_CMD_A4:
+        vout = (float)value / 100.0f;
+        vout_ready = 1;
+        break;
+        
+    case HMI_CMD_A7:
         vout = (float)value / 100.0f;
         vout_ready = 1;
         break;
@@ -84,6 +118,8 @@ void State_Init(void)
 
 void State_Proc(void)
 {
+    State_ProcessRealtimeFilter();
+
     switch (state)
     {
     case STATE_IDLE:
@@ -118,6 +154,9 @@ void State_Proc(void)
         if (hmi_a5_update_flag)
         {
             hmi_a5_update_flag = 0;
+            RealtimeFilter_Stop();
+            App_ADC_SetMode(ADC_MODE_LEARN);
+            App_ADC_ResetFlags();
             calculate_learn_start();
             state = STATE_CALC_LEARN;
         }
@@ -126,6 +165,12 @@ void State_Proc(void)
         {
             hmi_a6_update_flag = 0;
             state = STATE_CALC_IIR;
+        }
+
+        if (hmi_a7_update_flag)
+        {
+            hmi_a7_update_flag = 0;
+            State_HandleHmiData(HMI_CMD_A7, hmi_a7_value);
         }
 
         if (need_calculate)
@@ -158,7 +203,7 @@ void State_Proc(void)
 
     case STATE_CALC_IIR:
         need_calculate = 0;
-        // 构建iir，待补充
+        (void)RealtimeFilter_Start();
         state = STATE_CHECK_HMI;
         break;
 
