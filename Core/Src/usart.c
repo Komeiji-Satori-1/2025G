@@ -21,6 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "realtime_filter.h"
 
 /* USER CODE END 0 */
 
@@ -238,6 +239,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 int fputc(int ch,FILE *f){
+	if (RealtimeFilter_IsRunning() != 0U)
+	{
+		return ch;
+	}
 	HAL_UART_Transmit(&huart3,(uint8_t*)&ch,1,0xffff);
 	return ch;
 }

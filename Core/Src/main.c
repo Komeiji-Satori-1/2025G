@@ -262,7 +262,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
-          g_adc_mode_ctrl.iir_process_flags |= 0x02U;   // 后半缓冲
+            if ((g_adc_mode_ctrl.iir_process_flags & 0x02U) != 0U)
+            {
+                g_adc_mode_ctrl.iir_overrun_count++;
+            }
+            g_adc_mode_ctrl.iir_process_flags |= 0x02U;   // 后半缓冲
         }
     }
 }
@@ -273,7 +277,11 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
-          g_adc_mode_ctrl.iir_process_flags |= 0x01U;   // 前半缓冲
+            if ((g_adc_mode_ctrl.iir_process_flags & 0x01U) != 0U)
+            {
+                g_adc_mode_ctrl.iir_overrun_count++;
+            }
+            g_adc_mode_ctrl.iir_process_flags |= 0x01U;   // 前半缓冲
         }
     }
 }

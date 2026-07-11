@@ -51,6 +51,7 @@ static void State_StartLearn(void)
 static void State_ProcessRealtimeFilter(void)
 {
     uint8_t flags;
+    uint32_t offset;
 
     if (RealtimeFilter_IsRunning() == 0U)
     {
@@ -59,18 +60,36 @@ static void State_ProcessRealtimeFilter(void)
 
     __disable_irq();
     flags = g_adc_mode_ctrl.iir_process_flags;
-    g_adc_mode_ctrl.iir_process_flags = 0U;
+    if ((flags & 0x01U) != 0U)
+    {
+        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x01U;
+        flags = 0x01U;
+    }
+    else if ((flags & 0x02U) != 0U)
+    {
+        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x02U;
+        flags = 0x02U;
+    }
+    else
+    {
+        flags = 0U;
+    }
     __enable_irq();
 
     if ((flags & 0x01U) != 0U)
     {
-        RealtimeFilter_ProcessHalf(0U);
+        offset = 0U;
+    }
+    else if ((flags & 0x02U) != 0U)
+    {
+        offset = ADC_LEN / 2U;
+    }
+    else
+    {
+        return;
     }
 
-    if ((flags & 0x02U) != 0U)
-    {
-        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
-    }
+    RealtimeFilter_ProcessHalf(offset);
 }
 
 static void State_HandleHmiData(uint8_t head, uint32_t value)

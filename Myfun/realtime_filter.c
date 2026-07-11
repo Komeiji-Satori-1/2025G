@@ -10,7 +10,12 @@
 #define RT_HALF_BUFFER_LEN         (ADC_LEN / 2U)
 #define RT_ADC_MID_CODE            32768.0f
 #define RT_DAC_MID_CODE            2048.0f
-#define RT_ADC_TO_DAC_SCALE        (4095.0f / 65535.0f)
+#define RT_ADC_TO_DAC_SCALE        ((4095.0f / 65535.0f)*2.0f)
+#define RT_CACHE_LINE_SIZE         32U
+
+#if (((RT_HALF_BUFFER_LEN * 2U) % RT_CACHE_LINE_SIZE) != 0U)
+#error "RT half-buffer size must be a multiple of the DCache line size"
+#endif
 
 ALIGN_32BYTES(static uint16_t rt_adc_buf[RT_BUFFER_LEN]);
 ALIGN_32BYTES(static uint16_t rt_dac_buf[RT_BUFFER_LEN]);
@@ -27,6 +32,22 @@ static float rt_x1 = 0.0f;
 static float rt_x2 = 0.0f;
 static float rt_y1 = 0.0f;
 static float rt_y2 = 0.0f;
+
+static void RealtimeFilter_CleanDacCache(uint32_t offset, uint32_t sample_count)
+{
+    SCB_CleanDCache_by_Addr((uint32_t *)&rt_dac_buf[offset], (int32_t)(sample_count * sizeof(rt_dac_buf[0])));
+}
+
+static void RealtimeFilter_InvalidateAdcCache(uint32_t offset, uint32_t sample_count)
+{
+    SCB_InvalidateDCache_by_Addr((uint32_t *)&rt_adc_buf[offset], (int32_t)(sample_count * sizeof(rt_adc_buf[0])));
+}
+
+static void RealtimeFilter_PrepareDmaBuffers(void)
+{
+    SCB_CleanDCache_by_Addr((uint32_t *)rt_dac_buf, (int32_t)sizeof(rt_dac_buf));
+    SCB_CleanInvalidateDCache_by_Addr((uint32_t *)rt_adc_buf, (int32_t)sizeof(rt_adc_buf));
+}
 
 static void RealtimeFilter_ResetState(void)
 {
@@ -123,6 +144,17 @@ uint8_t RealtimeFilter_IsRunning(void)
     return realtime_running;
 }
 
+uint32_t RealtimeFilter_GetOverrunCount(void)
+{
+    uint32_t count;
+
+    __disable_irq();
+    count = g_adc_mode_ctrl.iir_overrun_count;
+    __enable_irq();
+
+    return count;
+}
+
 void RealtimeFilter_Init(void)
 {
     realtime_running = 0U;
@@ -161,6 +193,7 @@ uint8_t RealtimeFilter_Start(void)
     RealtimeFilter_LoadCoefficients();
     RealtimeFilter_ResetState();
     RealtimeFilter_FillDacBuffer((uint16_t)RT_DAC_MID_CODE);
+    RealtimeFilter_PrepareDmaBuffers();
 
     if (HAL_DAC_Start_DMA(&hdac1, DAC_CHANNEL_1, (uint32_t *)rt_dac_buf, RT_BUFFER_LEN, DAC_ALIGN_12B_R) != HAL_OK)
     {
@@ -251,8 +284,12 @@ void RealtimeFilter_ProcessHalf(uint32_t offset)
         return;
     }
 
+    RealtimeFilter_InvalidateAdcCache(offset, RT_HALF_BUFFER_LEN);
+
     for (uint32_t i = offset; i < end; i++)
     {
         RealtimeFilter_ProcessSample(i);
     }
+
+    RealtimeFilter_CleanDacCache(offset, RT_HALF_BUFFER_LEN);
 }

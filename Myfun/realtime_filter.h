@@ -11,6 +11,7 @@ void RealtimeFilter_Init(void);
 uint8_t RealtimeFilter_Start(void);
 void RealtimeFilter_Stop(void);
 uint8_t RealtimeFilter_IsRunning(void);
+uint32_t RealtimeFilter_GetOverrunCount(void);
 void RealtimeFilter_ProcessHalf(uint32_t offset);
 
 #ifdef __cplusplus
