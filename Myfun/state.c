@@ -41,6 +41,8 @@ static uint8_t need_calculate = 0;
 static void State_ProcessRealtimeFilter(void)
 {
     uint8_t flags;
+    uint8_t process_offset_valid = 0U;
+    uint32_t process_offset = 0U;
 
     if (RealtimeFilter_IsRunning() == 0U)
     {
@@ -49,17 +51,23 @@ static void State_ProcessRealtimeFilter(void)
 
     __disable_irq();
     flags = g_adc_mode_ctrl.iir_process_flags;
-    g_adc_mode_ctrl.iir_process_flags = 0U;
-    __enable_irq();
-
     if ((flags & 0x01U) != 0U)
     {
-        RealtimeFilter_ProcessHalf(0U);
+        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x01U;
+        process_offset = 0U;
+        process_offset_valid = 1U;
     }
-
-    if ((flags & 0x02U) != 0U)
+    else if ((flags & 0x02U) != 0U)
     {
-        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
+        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x02U;
+        process_offset = ADC_LEN / 2U;
+        process_offset_valid = 1U;
+    }
+    __enable_irq();
+
+    if (process_offset_valid != 0U)
+    {
+        RealtimeFilter_ProcessHalf(process_offset);
     }
 }
 

@@ -42,7 +42,8 @@ void MX_USART1_UART_Init(void);
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void App_Printf_SetEnabled(uint8_t enable);
+uint8_t App_Printf_IsEnabled(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

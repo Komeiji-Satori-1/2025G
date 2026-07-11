@@ -14,7 +14,8 @@ volatile adc_mode_ctrl_t g_adc_mode_ctrl =
     .adc1_done = 0U,
     .adc2_done = 0U,
     .adc_flag = 0U,
-    .iir_process_flags = 0U
+    .iir_process_flags = 0U,   
+    .iir_overrun_count = 0U
 };
 
 void App_ADC_SetMode(adc_mode_t mode)
@@ -28,6 +29,7 @@ void App_ADC_ResetFlags(void)
     g_adc_mode_ctrl.adc2_done = 0U;
     g_adc_mode_ctrl.adc_flag = 0U;
     g_adc_mode_ctrl.iir_process_flags = 0U;
+    g_adc_mode_ctrl.iir_overrun_count = 0U;
 }
 
 /* 进入滤波模式：ADC1 改成 circular，只采 PA0 */
@@ -52,7 +54,7 @@ uint8_t App_ADC1_Reconfig_ForFilter(uint16_t *adc_buf, uint32_t adc_len)
     hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
     hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_adc1.Init.Mode = DMA_CIRCULAR;
-    hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+    hdma_adc1.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
     if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
@@ -100,7 +102,7 @@ uint8_t App_ADC_Restore_ForLearn(uint16_t *adc1_buf, uint16_t *adc2_buf, uint32_
     hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
     hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_adc1.Init.Mode = DMA_NORMAL;
-    hdma_adc1.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
     hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
     if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
@@ -126,7 +128,7 @@ uint8_t App_ADC_Restore_ForLearn(uint16_t *adc1_buf, uint16_t *adc2_buf, uint32_
     hdma_adc2.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
     hdma_adc2.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_adc2.Init.Mode = DMA_NORMAL;
-    hdma_adc2.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_adc2.Init.Priority = DMA_PRIORITY_HIGH;
     hdma_adc2.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
     if (HAL_DMA_Init(&hdma_adc2) != HAL_OK)
