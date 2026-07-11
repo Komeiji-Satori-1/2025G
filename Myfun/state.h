@@ -3,7 +3,7 @@
 
 #include "main.h"
 #include "AD9833.h"
-
+#include "modify_adc.h"
 
 
 void State_Init(void);

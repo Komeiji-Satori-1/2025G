@@ -1,9 +1,7 @@
 #include "state.h"
 #include "calculate.h"
 #include "command.h"
-#include "realtime_filter.h"
 #include "iir.h"
-
 
 #define HMI_CMD_A1 0xA1
 #define HMI_CMD_A2 0xA2
@@ -14,6 +12,9 @@
 
 #define STATE_DEFAULT_VOUT 1.0f
 #define STATE_DEFAULT_FREQ 1000U
+
+extern uint16_t ADC1_IN[ADC_LEN ];
+extern uint16_t ADC2_OUT[ADC_LEN ] ;
 
 typedef enum
 {
@@ -119,7 +120,6 @@ void State_Proc(void)
         if (hmi_a5_update_flag)
         {
             hmi_a5_update_flag = 0;
-            RealtimeFilter_Stop();
             calculate_learn_start();
             state = STATE_CALC_LEARN;
         }
@@ -147,32 +147,27 @@ void State_Proc(void)
         break;
 
     case STATE_CALC_LEARN:
-        need_calculate = 0;
-
-        calculate_learn_proc();
-
-        if (get_learn_done() == 1)
+        if (App_ADC_Restore_ForLearn(ADC1_IN, ADC2_OUT, ADC_LEN) != 0U)
         {
-            printf("Learn finished, calculating IIR coefficients...\n");
-            state = STATE_CHECK_HMI;
+            need_calculate = 0;
+
+            calculate_learn_proc();
+
+            if (get_learn_done() == 1)
+            {
+                printf("Learn finished, calculating IIR coefficients...\n");
+                state = STATE_CHECK_HMI;
+            }
         }
         break;
 
     case STATE_CALC_IIR:
-        need_calculate = 0;
-        if (!calculate_iir_coeff_ready())
+        if (App_ADC1_Reconfig_ForFilter(iir_adc_buf, IIR_DMA_SAMPLES) != 0U)
         {
-            printf("IIR coefficients are not ready.\r\n");
+            need_calculate = 0;
+            // 构建iir，待补充
             state = STATE_CHECK_HMI;
-            break;
         }
-
-        if (!RealtimeFilter_Start())
-        {
-            printf("Realtime filter start failed.\r\n");
-        }
-
-        state = STATE_CHECK_HMI;
         break;
 
     default:
