@@ -33,6 +33,7 @@
 #include "state.h"
 #include "command.h"
 #include "iir.h"
+#include "modify_adc.h"
 #include "realtime_filter.h"
 /* USER CODE END Includes */
 
@@ -58,9 +59,7 @@
 uint16_t ADC1_IN[ADC_LEN ] = {0};
 uint16_t ADC2_OUT[ADC_LEN ] = {0};
 
-volatile uint8_t ADC_Flag = 0;
-static volatile uint8_t adc1_done = 0;
-static volatile uint8_t adc2_done = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,18 +73,15 @@ void PeriphCommonClock_Config(void);
 /* USER CODE BEGIN 0 */
 void Start_ADC_Capture(void)
 {
-    RealtimeFilter_Stop();
-
     HAL_ADC_Stop_DMA(&hadc1);
     HAL_ADC_Stop_DMA(&hadc2);
 
-    adc1_done = 0;
-    adc2_done = 0;
-    ADC_Flag = 0;
+    g_adc_mode_ctrl.adc1_done = 0;
+    g_adc_mode_ctrl.adc2_done = 0;
+    g_adc_mode_ctrl.adc_flag = 0;
 
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
-    HAL_TIM_Base_Start(&htim8);
 }
 /* USER CODE END 0 */
 
@@ -131,10 +127,9 @@ int main(void)
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
   HAL_TIM_Base_Start(&htim8);
-	
+  RealtimeFilter_Init();
   My_Usart_Init();
   AD9833_Init_GPIO();
-  RealtimeFilter_Init();
   State_Init();
 //AD9833_WaveSeting(1000,0,SIN_WAVE,0 );
 //AD9833_AmpSet(30);
@@ -244,34 +239,41 @@ void PeriphCommonClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    if ((hadc == &hadc1) && (RealtimeFilter_IsRunning() != 0U))
+    if (g_adc_mode_ctrl.mode == ADC_MODE_LEARN)
     {
-        RealtimeFilter_ProcessHalf(ADC_LEN / 2U);
-        return;
-    }
+        if (hadc == &hadc1)
+        {
+            HAL_ADC_Stop_DMA(hadc);
+            g_adc_mode_ctrl.adc1_done = 1U;
+        }
+        else if (hadc == &hadc2)
+        {
+            HAL_ADC_Stop_DMA(hadc);
+            g_adc_mode_ctrl.adc2_done = 1U;
+        }
 
-    if (hadc == &hadc1)
-    {
-        HAL_ADC_Stop_DMA(hadc);
-        adc1_done = 1U;
+        if (g_adc_mode_ctrl.adc1_done && g_adc_mode_ctrl.adc2_done)
+        {
+            g_adc_mode_ctrl.adc_flag = 1U;
+        }
     }
-    else if (hadc == &hadc2)
+    else if (g_adc_mode_ctrl.mode == ADC_MODE_FILTER)
     {
-        HAL_ADC_Stop_DMA(hadc);
-        adc2_done = 1U;
-    }
-
-    if (adc1_done == 1U && adc2_done == 1U)
-    {
-        ADC_Flag = 1U;
+        if (hadc == &hadc1)
+        {
+          g_adc_mode_ctrl.iir_process_flags |= 0x02U;   // 后半缓冲
+        }
     }
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    if ((hadc == &hadc1) && (RealtimeFilter_IsRunning() != 0U))
+    if (g_adc_mode_ctrl.mode == ADC_MODE_FILTER)
     {
-        RealtimeFilter_ProcessHalf(0U);
+        if (hadc == &hadc1)
+        {
+          g_adc_mode_ctrl.iir_process_flags |= 0x01U;   // 前半缓冲
+        }
     }
 }
 /* USER CODE END 4 */
