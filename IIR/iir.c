@@ -153,7 +153,7 @@ analog_coef matrix_calc(void)
         s2_coef, t3_coef, -s4_coef, 0.0, u4_coef};
 
     // ==================== 2. 构建常数向量 C (5x1) ====================
-    float64_t C_data[VECTOR_SIZE] = {s0_coef, t1_coef, s2_coef, 0.0, u2_coef};
+    float64_t C_data[VECTOR_SIZE] = {s0_coef, t1_coef, -s2_coef, 0.0, u2_coef};
 
     // ==================== 3. 定义矩阵结构体 ====================
     analog_coef analog_coef_temp;  // 返回结果
@@ -433,7 +433,7 @@ FILTER_TYPE get_filter_type(const analog_coef * coef) {
         printf("Filter Type: HIGH_PASS_FILTER\n");
         return HIGH_PASS_FILTER;
     }
-    else if (H_0 < FILTER_MODE_THR_LOW && H_inf < FILTER_MODE_THR_LOW)
+    else if (H_0 < FILTER_MODE_THR_HIGH && H_inf < FILTER_MODE_THR_HIGH)
     {
         HMI_send_string("t5", "BAND_PASS_FILTER");
         printf("Filter Type: BAND_PASS_FILTER\n");

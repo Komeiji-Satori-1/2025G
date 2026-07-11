@@ -12,6 +12,7 @@ extern uint16_t ADC2_OUT[ADC_LEN];
 #define LEARN_STOP_FREQ_HZ 100000U
 #define LEARN_STEP_FREQ_HZ 200U
 #define LEARN_SETTLE_MS 20U
+#define LEARN_PRINT_INTERVAL_HZ 1000U
 
 #define LEARN_POINT_NUM (((LEARN_STOP_FREQ_HZ - LEARN_START_FREQ_HZ) / LEARN_STEP_FREQ_HZ) + 1U)
 
@@ -342,7 +343,7 @@ static uint8_t clamp_amp_code(float code)
         return 255;
     }
 
-    return (uint8_t)(code);
+    return (uint8_t)(code+0.5f);
 }
 
 uint8_t calculate_ad9833_amp_code(float vin)
@@ -410,7 +411,7 @@ void calculate_learn_proc(void)
         break;
 
     case LEARN_SET_FREQ:
-        printf("Setting frequency to %lu Hz\n", learn.freq);
+        //printf("Setting frequency to %lu Hz\n", learn.freq);
         AD9833_WaveSeting(learn.freq, 0, SIN_WAVE, 0);
         learn.wait_tick = HAL_GetTick(); // 计时函数
         learn.state = LEARN_WAIT_STABLE;
@@ -442,6 +443,17 @@ void calculate_learn_proc(void)
         FFT_SingleFreqDFT_U16(ADC2_OUT, ADC_LEN, 200000.0f, (float)learn.freq, &output_dft);
 
         FFT_CalcTransfer(&input_dft, &output_dft, &h);
+
+        if (((learn.freq - LEARN_START_FREQ_HZ) % LEARN_PRINT_INTERVAL_HZ) == 0U)
+        {
+            printf("Freq = %lu Hz\n", (unsigned long)learn.freq);
+            printf("Input:  real=%.3f, imag=%.3f, mag=%.3f, phase=%.3f\n",
+                   input_dft.real, input_dft.imag, input_dft.mag, input_dft.phase);
+            printf("Output: real=%.3f, imag=%.3f, mag=%.3f, phase=%.3f\n",
+                   output_dft.real, output_dft.imag, output_dft.mag, output_dft.phase);
+            printf("H:      real=%.6f, imag=%.6f, mag=%.6f, phase=%.6f\n",
+                   h.real, h.imag, h.mag, h.phase);
+        }
 
         freq_table[learn.index] = (float)learn.freq;
         h_table[learn.index].r = h.real;
