@@ -80,8 +80,15 @@ void Start_ADC_Capture(void)
     g_adc_mode_ctrl.adc1_done = 0;
     g_adc_mode_ctrl.adc2_done = 0;
     g_adc_mode_ctrl.adc_flag = 0;
+    g_adc_mode_ctrl.iir_adc_ready_flags = 0;
+    g_adc_mode_ctrl.iir_dac_free_flags = 0;
     g_adc_mode_ctrl.iir_process_flags = 0;
     g_adc_mode_ctrl.iir_overrun_count = 0;
+    g_adc_mode_ctrl.iir_adc_half_irq_count = 0;
+    g_adc_mode_ctrl.iir_adc_full_irq_count = 0;
+    g_adc_mode_ctrl.iir_dac_half_irq_count = 0;
+    g_adc_mode_ctrl.iir_dac_full_irq_count = 0;
+    g_adc_mode_ctrl.iir_dac_error_count = 0;
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_IN, ADC_LEN);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_OUT, ADC_LEN);
 }
@@ -239,6 +246,48 @@ void PeriphCommonClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+#define IIR_FIRST_HALF_FLAG  0x01U
+#define IIR_SECOND_HALF_FLAG 0x02U
+
+static void App_IIR_TryQueueProcessFlag(uint8_t half_flag)
+{
+    if (((g_adc_mode_ctrl.iir_adc_ready_flags & half_flag) != 0U) &&
+        ((g_adc_mode_ctrl.iir_dac_free_flags & half_flag) != 0U))
+    {
+        g_adc_mode_ctrl.iir_adc_ready_flags &= (uint8_t)~half_flag;
+        g_adc_mode_ctrl.iir_dac_free_flags &= (uint8_t)~half_flag;
+
+        if ((g_adc_mode_ctrl.iir_process_flags & half_flag) != 0U)
+        {
+            g_adc_mode_ctrl.iir_overrun_count++;
+        }
+
+        g_adc_mode_ctrl.iir_process_flags |= half_flag;
+    }
+}
+
+static void App_IIR_MarkAdcReady(uint8_t half_flag)
+{
+    if ((g_adc_mode_ctrl.iir_adc_ready_flags & half_flag) != 0U)
+    {
+        g_adc_mode_ctrl.iir_overrun_count++;
+    }
+
+    g_adc_mode_ctrl.iir_adc_ready_flags |= half_flag;
+    App_IIR_TryQueueProcessFlag(half_flag);
+}
+
+static void App_IIR_MarkDacFree(uint8_t half_flag)
+{
+    if ((g_adc_mode_ctrl.iir_dac_free_flags & half_flag) != 0U)
+    {
+        g_adc_mode_ctrl.iir_overrun_count++;
+    }
+
+    g_adc_mode_ctrl.iir_dac_free_flags |= half_flag;
+    App_IIR_TryQueueProcessFlag(half_flag);
+}
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     if (g_adc_mode_ctrl.mode == ADC_MODE_LEARN)
@@ -263,11 +312,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
-            if ((g_adc_mode_ctrl.iir_process_flags & 0x02U) != 0U)
-            {
-                g_adc_mode_ctrl.iir_overrun_count++;
-            }
-            g_adc_mode_ctrl.iir_process_flags |= 0x02U; // 后半缓冲
+            g_adc_mode_ctrl.iir_adc_full_irq_count++;
+            App_IIR_MarkAdcReady(IIR_SECOND_HALF_FLAG);
         }
     }
 }
@@ -278,12 +324,35 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
     {
         if (hadc == &hadc1)
         {
-            if ((g_adc_mode_ctrl.iir_process_flags & 0x01U) != 0U)
-            {
-                g_adc_mode_ctrl.iir_overrun_count++;
-            }
-            g_adc_mode_ctrl.iir_process_flags |= 0x01U; // 前半缓冲
+            g_adc_mode_ctrl.iir_adc_half_irq_count++;
+            App_IIR_MarkAdcReady(IIR_FIRST_HALF_FLAG);
         }
+    }
+}
+
+void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef *hdac)
+{
+    if ((g_adc_mode_ctrl.mode == ADC_MODE_FILTER) && (hdac == &hdac1))
+    {
+        g_adc_mode_ctrl.iir_dac_full_irq_count++;
+        App_IIR_MarkDacFree(IIR_SECOND_HALF_FLAG);
+    }
+}
+
+void HAL_DAC_ConvHalfCpltCallbackCh1(DAC_HandleTypeDef *hdac)
+{
+    if ((g_adc_mode_ctrl.mode == ADC_MODE_FILTER) && (hdac == &hdac1))
+    {
+        g_adc_mode_ctrl.iir_dac_half_irq_count++;
+        App_IIR_MarkDacFree(IIR_FIRST_HALF_FLAG);
+    }
+}
+
+void HAL_DAC_ErrorCallbackCh1(DAC_HandleTypeDef *hdac)
+{
+    if (hdac == &hdac1)
+    {
+        g_adc_mode_ctrl.iir_dac_error_count++;
     }
 }
 /* USER CODE END 4 */

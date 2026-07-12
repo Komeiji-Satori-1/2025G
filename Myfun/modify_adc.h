@@ -20,8 +20,15 @@ typedef struct
     uint8_t adc1_done;
     uint8_t adc2_done;
     uint8_t adc_flag;
+    uint8_t iir_adc_ready_flags;
+    uint8_t iir_dac_free_flags;
     uint8_t iir_process_flags;
     uint32_t iir_overrun_count;
+    uint32_t iir_adc_half_irq_count;
+    uint32_t iir_adc_full_irq_count;
+    uint32_t iir_dac_half_irq_count;
+    uint32_t iir_dac_full_irq_count;
+    uint32_t iir_dac_error_count;
 } adc_mode_ctrl_t;
 
 extern volatile adc_mode_ctrl_t g_adc_mode_ctrl;

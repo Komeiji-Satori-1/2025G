@@ -14,8 +14,15 @@ volatile adc_mode_ctrl_t g_adc_mode_ctrl =
     .adc1_done = 0U,
     .adc2_done = 0U,
     .adc_flag = 0U,
-    .iir_process_flags = 0U,   
-    .iir_overrun_count = 0U
+    .iir_adc_ready_flags = 0U,
+    .iir_dac_free_flags = 0U,
+    .iir_process_flags = 0U,
+    .iir_overrun_count = 0U,
+    .iir_adc_half_irq_count = 0U,
+    .iir_adc_full_irq_count = 0U,
+    .iir_dac_half_irq_count = 0U,
+    .iir_dac_full_irq_count = 0U,
+    .iir_dac_error_count = 0U
 };
 
 void App_ADC_SetMode(adc_mode_t mode)
@@ -28,8 +35,15 @@ void App_ADC_ResetFlags(void)
     g_adc_mode_ctrl.adc1_done = 0U;
     g_adc_mode_ctrl.adc2_done = 0U;
     g_adc_mode_ctrl.adc_flag = 0U;
+    g_adc_mode_ctrl.iir_adc_ready_flags = 0U;
+    g_adc_mode_ctrl.iir_dac_free_flags = 0U;
     g_adc_mode_ctrl.iir_process_flags = 0U;
     g_adc_mode_ctrl.iir_overrun_count = 0U;
+    g_adc_mode_ctrl.iir_adc_half_irq_count = 0U;
+    g_adc_mode_ctrl.iir_adc_full_irq_count = 0U;
+    g_adc_mode_ctrl.iir_dac_half_irq_count = 0U;
+    g_adc_mode_ctrl.iir_dac_full_irq_count = 0U;
+    g_adc_mode_ctrl.iir_dac_error_count = 0U;
 }
 
 /* 进入滤波模式：ADC1 改成 circular，只采 PA0 */

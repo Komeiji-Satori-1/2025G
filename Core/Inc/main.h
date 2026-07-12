@@ -71,7 +71,7 @@ void Error_Handler(void);
 #define AD9833_FSY_Pin GPIO_PIN_15
 #define AD9833_FSY_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-#define ADC_LEN 1024
+#define ADC_LEN 2048
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
