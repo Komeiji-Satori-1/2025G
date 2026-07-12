@@ -40,7 +40,6 @@ static uint8_t need_calculate = 0;
 
 static void State_ProcessRealtimeFilter(void)
 {
-    uint8_t flags;
     uint8_t process_offset_valid = 0U;
     uint32_t process_offset = 0U;
 
@@ -50,16 +49,19 @@ static void State_ProcessRealtimeFilter(void)
     }
 
     __disable_irq();
-    flags = g_adc_mode_ctrl.iir_process_flags;
-    if ((flags & 0x01U) != 0U)
+    if ((g_adc_mode_ctrl.iir_adc_half_ready != 0U) &&
+        (g_adc_mode_ctrl.iir_dac_half_ready != 0U))
     {
-        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x01U;
+        g_adc_mode_ctrl.iir_adc_half_ready = 0U;
+        g_adc_mode_ctrl.iir_dac_half_ready = 0U;
         process_offset = 0U;
         process_offset_valid = 1U;
     }
-    else if ((flags & 0x02U) != 0U)
+    else if ((g_adc_mode_ctrl.iir_adc_full_ready != 0U) &&
+             (g_adc_mode_ctrl.iir_dac_full_ready != 0U))
     {
-        g_adc_mode_ctrl.iir_process_flags &= (uint8_t)~0x02U;
+        g_adc_mode_ctrl.iir_adc_full_ready = 0U;
+        g_adc_mode_ctrl.iir_dac_full_ready = 0U;
         process_offset = ADC_LEN / 2U;
         process_offset_valid = 1U;
     }
